@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>@ViewData["Title"] — Petlor</title>
+    <meta name="description" content="Petlor cung cấp dịch vụ spa, khám thú y, khách sạn lưu trú, huấn luyện và dắt thú cưng đi dạo tại TP. Hồ Chí Minh. Đặt lịch online trong 2 phút." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- asp-append-version busts the cache automatically whenever site.css changes -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <a href="#main" class="skip-link">Bỏ qua, đi tới nội dung chính</a>
+    <div class="toast-region" id="toastRegion"></div>
+
+    <header class="site-header" id="siteHeader">
+        <div class="container nav-wrap">
+            <a asp-controller="Home" asp-action="Index" class="brand">
+                <svg class="mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <circle cx="24" cy="29" r="11" fill="currentColor" />
+                    <circle cx="10" cy="16" r="5.5" fill="currentColor" />
+                    <circle cx="38" cy="16" r="5.5" fill="currentColor" />
+                    <circle cx="16" cy="7" r="4.5" fill="currentColor" />
+                    <circle cx="32" cy="7" r="4.5" fill="currentColor" />
+                </svg>
+                Petlor
+            </a>
+
+            <nav class="nav-links" aria-label="Điều hướng chính">
+                <a href="#dich-vu">Dịch vụ</a>
+                <a href="#medicine-advice">Tư vấn thuốc</a>
+                <a href="#quy-trinh">Quy trình</a>
+                <a href="#bo-suu-tap">Bộ sưu tập</a>
+                <a href="#bang-gia">Bảng giá</a>
+                <a href="#danh-gia">Đánh giá</a>
+                <a href="#lien-he">Liên hệ</a>
+            </nav>
+
+            <div class="nav-right">
+                <a class="nav-phone" href="tel:0901234567">
+                    <partial name="_IconPhone" />
+                    0901 234 567
+                </a>
+                <a href="#dat-lich" class="btn btn-primary btn-sm">Đặt lịch ngay</a>
+                <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mobilePanel">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <line x1="3" y1="6" x2="21" y2="6" />
+                        <line x1="3" y1="12" x2="21" y2="12" />
+                        <line x1="3" y1="18" x2="21" y2="18" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="mobile-panel" id="mobilePanel">
+            <a href="#dich-vu">Dịch vụ</a>
+            <a href="#ve-chung-toi">Về chúng tôi</a>
+            <a href="#quy-trinh">Quy trình</a>
+            <a href="#bo-suu-tap">Bộ sưu tập</a>
+            <a href="#bang-gia">Bảng giá</a>
+            <a href="#danh-gia">Đánh giá</a>
+            <a href="#faq">Câu hỏi thường gặp</a>
+            <a href="#lien-he">Liên hệ</a>
+            <a href="#dat-lich" class="btn btn-primary btn-block">Đặt lịch ngay</a>
+        </div>
+    </header>
+
+    <main id="main">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <svg class="mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <circle cx="24" cy="29" r="11" fill="currentColor" />
+                            <circle cx="10" cy="16" r="5.5" fill="currentColor" />
+                            <circle cx="38" cy="16" r="5.5" fill="currentColor" />
+                            <circle cx="16" cy="7" r="4.5" fill="currentColor" />
+                            <circle cx="32" cy="7" r="4.5" fill="currentColor" />
+                        </svg>
+                        Petlor
+                    </div>
+                    <p style="font-size:14px;line-height:1.7;max-width:280px">
+                        Trạm chăm sóc thú cưng tận tâm tại TP. Hồ Chí Minh — spa, thú y, lưu trú, huấn luyện và dạo bộ mỗi ngày.
+                    </p>
+                </div>
+                <div class="footer-col">
+                    <h5>Dịch vụ</h5>
+                    <ul>
+                        <li><a href="#dich-vu">Spa &amp; Cắt tỉa lông</a></li>
+                        <li><a href="#dich-vu">Khám &amp; Điều trị thú y</a></li>
+                        <li><a href="#dich-vu">Khách sạn thú cưng</a></li>
+                        <li><a href="#dich-vu">Huấn luyện hành vi</a></li>
+                        <li><a href="#dich-vu">Dắt thú cưng đi dạo</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Petlor</h5>
+                    <ul>
+                        <li><a href="#ve-chung-toi">Về chúng tôi</a></li>
+                        <li><a href="#quy-trinh">Quy trình chăm sóc</a></li>
+                        <li><a href="#bang-gia">Bảng giá</a></li>
+                        <li><a href="#danh-gia">Đánh giá khách hàng</a></li>
+                        <li><a href="#faq">Câu hỏi thường gặp</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h5>Liên hệ</h5>
+                    <ul>
+                        <li><a href="tel:0901234567">0901 234 567</a></li>
+                        <li><a href="mailto:hello@petlor.vn">hello@petlor.vn</a></li>
+                        <li><a href="#lien-he">12 Nguyễn Văn Trỗi, Phú Nhuận, TP.HCM</a></li>
+                        <li><a href="#dat-lich">Đặt lịch ngay</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>&copy; @DateTime.Now.Year Petlor. Đã đăng ký bản quyền.</span>
+                <span>Thiết kế dành riêng cho thú cưng &amp; người yêu thương chúng 🐾</span>
+            </div>
+        </div>
+    </footer>
+
+    <div class="float-stack">
+        <a class="float-btn call" href="tel:0901234567" aria-label="Gọi hotline">
+            <partial name="_IconPhone" />
+        </a>
+        <button class="float-btn top" id="toTop" aria-label="Lên đầu trang">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5" />
+                <path d="m5 12 7-7 7 7" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- jQuery + unobtrusive-validation power the [Required]/[RegularExpression]
+         attributes on BookingViewModel/NewsletterViewModel client-side, for free -->
+    <script src="~/lib/jquery/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,24 @@
+@model PriceTier
+<div class="price-card @(Model.Featured ? "featured" : "")">
+    @if (Model.Featured)
+    {
+        <span class="price-tag">Phổ biến nhất</span>
+    }
+    <h3>@Model.Name</h3>
+    <p class="price-tier-note">@Model.Note</p>
+    <div class="price-amount" data-dog="@Model.DogPrice" data-cat="@Model.CatPrice">
+        @Model.DogPrice <span>/ lượt</span>
+    </div>
+    <ul class="price-feats">
+        @foreach (var feat in Model.Features)
+        {
+            <li>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 6 9 17l-5-5" />
+                </svg>
+                @feat
+            </li>
+        }
+    </ul>
+    <a href="#dat-lich" class="btn @(Model.Featured ? "btn-accent" : "btn-ghost") btn-block">Chọn gói này</a>
+</div>

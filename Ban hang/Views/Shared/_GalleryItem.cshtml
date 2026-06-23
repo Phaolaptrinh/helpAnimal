@@ -1,0 +1,5 @@
+@model GalleryItem
+<div class="gal-item @Model.LayoutClass" data-cat="@Model.Category" data-caption="@Model.Caption">
+    <img src="@Model.ImageUrl" alt="@Model.Alt" loading="lazy" />
+    <div class="ov"><span>@Model.Caption</span></div>
+</div>

@@ -1,0 +1,600 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Trạm chăm sóc thú cưng tận tâm";
+}
+
+<!-- ============================ HERO ============================ -->
+<section class="hero" id="trang-chu">
+    <div class="container hero-grid">
+        <div class="hero-copy reveal">
+            <div class="hero-eyebrow">
+                <span class="dot">
+                    <svg class="icon" style="width:14px;height:14px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                </span>
+                Đặt lịch online — xác nhận trong 5 phút
+            </div>
+            <h1>Mỗi bước đồng hành,<br />là một bước <em>tận tâm</em>.</h1>
+            <p class="hero-lead">
+                Petlor chăm sóc thú cưng của bạn như chăm sóc thành viên trong nhà — từ spa,
+                khám thú y, lưu trú, huấn luyện cho đến những buổi dạo chơi mỗi ngày, ngay tại TP. Hồ Chí Minh.
+            </p>
+            <div class="hero-cta">
+                <a href="#dat-lich" class="btn btn-accent">Đặt lịch hẹn</a>
+                <a href="#dich-vu" class="btn btn-ghost">Khám phá dịch vụ</a>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat"><b>12+</b><span>năm kinh nghiệm</span></div>
+                <div class="hero-stat"><b>8.500+</b><span>thú cưng đã chăm sóc</span></div>
+                <div class="hero-stat"><b>4.9/5</b><span>đánh giá hài lòng</span></div>
+            </div>
+        </div>
+        <div class="hero-art reveal">
+            <div class="frame">
+                <img src="https://loremflickr.com/900/1040/goldenretriever,dog/all?lock=101" alt="Chú chó Golden Retriever vui vẻ tại Petlor" loading="lazy" />
+            </div>
+            <div class="hero-badge b1">
+                <span class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
+                    </svg>
+                </span>
+                <div><strong>Bác sĩ trực 24/7</strong><span>Hỗ trợ cấp cứu</span></div>
+            </div>
+            <div class="hero-badge b2">
+                <span class="icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+                    </svg>
+                </span>
+                <div><strong>Đón trong 30'</strong><span>Tận nhà nội thành</span></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="marquee-strip">
+    <div class="marquee-track" id="marqueeTrack">
+        @{
+            string[] marqueeItems = {
+                "Mở cửa cả 7 ngày trong tuần", "Đưa đón thú cưng tận nhà",
+                "Bác sĩ thú y trực cấp cứu 24/7", "Theo dõi tình trạng qua Zalo",
+                "Hơn 8.500 thú cưng tin tưởng"
+            };
+        }
+        @* render twice back-to-back so the CSS scroll animation loops seamlessly *@
+        @for (var pass = 0; pass < 2; pass++)
+        {
+            foreach (var item in marqueeItems)
+            {
+                <span>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 6 9 17l-5-5" />
+                    </svg>
+                    @item
+                </span>
+            }
+        }
+    </div>
+</div>
+
+<!-- ============================ SERVICES ============================ -->
+<section class="pad" id="dich-vu">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Dịch vụ</div>
+            <h2>Tất cả những gì thú cưng cần,<br />trong một mái nhà</h2>
+            <p>Từ một buổi spa thư giãn đến một ca khám sức khỏe định kỳ — đội ngũ Petlor đồng hành cùng bạn ở mọi giai đoạn.</p>
+        </div>
+        <div class="services-grid">
+            @foreach (var svc in Model.Services)
+            {
+                <partial name="_ServiceCard" model="svc" />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============================ STATS ============================ -->
+<section class="pad-sm">
+    <div class="container">
+        <div class="stats-band reveal">
+            <div class="stat"><b data-count="12" data-suffix="+">0</b><span>Năm kinh nghiệm</span></div>
+            <div class="stat"><b data-count="8500" data-suffix="+">0</b><span>Thú cưng đã chăm sóc</span></div>
+            <div class="stat"><b data-count="15" data-suffix="">0</b><span>Bác sĩ thú y chuyên môn</span></div>
+            <div class="stat"><b data-count="49" data-suffix="" data-decimal="10">0</b><span>Điểm hài lòng (/5)</span></div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ ABOUT ============================ -->
+<section class="pad" id="ve-chung-toi">
+    <div class="container about-grid">
+        <div class="about-img reveal">
+            <img src="https://loremflickr.com/800/1000/veterinarian,clinic/all?lock=108" alt="Bác sĩ thú y Petlor đang khám cho một chú chó" loading="lazy" />
+            <div class="pill"><b>12 năm</b><span>đồng hành cùng thú cưng Việt</span></div>
+        </div>
+        <div class="reveal">
+            <div class="eyebrow">Về Petlor</div>
+            <h2 style="font-size:clamp(28px,3.6vw,40px)">Chăm sóc bằng sự thấu hiểu,<br />không chỉ bằng quy trình</h2>
+            <p style="margin-top:18px;color:var(--ink-soft);font-size:16px">
+                Petlor được thành lập từ tình yêu dành cho động vật của một nhóm bác sĩ thú y và chuyên viên grooming
+                tại TP. Hồ Chí Minh. Chúng tôi tin rằng mỗi thú cưng có một tính cách riêng, nên mọi dịch vụ đều được
+                thiết kế xoay quanh nhu cầu cụ thể của từng "khách hàng nhỏ" — không áp dụng công thức chung cho tất cả.
+            </p>
+            <ul class="about-list">
+                <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg></span>Đội ngũ bác sĩ thú y &amp; groomer được đào tạo bài bản, cập nhật thường xuyên</li>
+                <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg></span>Trang thiết bị y tế và phòng lưu trú đạt chuẩn vệ sinh quốc tế</li>
+                <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg></span>Minh bạch chi phí — báo giá rõ ràng trước khi thực hiện bất kỳ dịch vụ nào</li>
+                <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg></span>Cập nhật hình ảnh, video thực tế trong quá trình chăm sóc</li>
+            </ul>
+            <a href="#dat-lich" class="btn btn-primary" style="margin-top:30px">Tìm hiểu dịch vụ phù hợp</a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ PROCESS ============================ -->
+<section class="pad" id="quy-trinh" style="background:var(--surface)">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Quy trình</div>
+            <h2>Hành trình chăm sóc,<br />từng bước một</h2>
+            <p>Giống như một buổi dạo bộ quen thuộc — mỗi chặng trong hành trình đều có người đồng hành và đích đến rõ ràng.</p>
+        </div>
+        <div class="trail">
+            <div class="trail-step reveal">
+                <div class="trail-node"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></svg></div>
+                <div class="trail-body">
+                    <div class="trail-step-label">Chặng 1 · ~2 phút</div>
+                    <h3>Đặt lịch online hoặc qua hotline</h3>
+                    <p>Chọn dịch vụ, khung giờ phù hợp và để lại thông tin thú cưng — chúng tôi xác nhận trong 5 phút.</p>
+                </div>
+            </div>
+            <div class="trail-step reveal">
+                <div class="trail-node"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V9a1 1 0 0 1 1-1h11l4 4v4" /><circle cx="7.5" cy="17.5" r="1.8" /><circle cx="17.5" cy="17.5" r="1.8" /></svg></div>
+                <div class="trail-body">
+                    <div class="trail-step-label">Chặng 2 · Đúng giờ hẹn</div>
+                    <h3>Đón thú cưng tận nhà</h3>
+                    <p>Xe Pet Taxi của Petlor đến đón đúng khung giờ đã đặt, đảm bảo an toàn suốt hành trình.</p>
+                </div>
+            </div>
+            <div class="trail-step reveal">
+                <div class="trail-node"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" /></svg></div>
+                <div class="trail-body">
+                    <div class="trail-step-label">Chặng 3 · Theo phác đồ riêng</div>
+                    <h3>Chăm sóc theo nhu cầu cụ thể</h3>
+                    <p>Bác sĩ &amp; chuyên viên thực hiện dịch vụ theo đúng tình trạng sức khỏe và tính cách của thú cưng.</p>
+                </div>
+            </div>
+            <div class="trail-step reveal">
+                <div class="trail-node"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" /></svg></div>
+                <div class="trail-body">
+                    <div class="trail-step-label">Chặng 4 · Thời gian thực</div>
+                    <h3>Cập nhật tình trạng qua Zalo</h3>
+                    <p>Chủ nuôi nhận hình ảnh, video và ghi chú từ chuyên viên ngay trong quá trình chăm sóc.</p>
+                </div>
+            </div>
+            <div class="trail-step reveal">
+                <div class="trail-node"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 3l9 6.5" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg></div>
+                <div class="trail-body">
+                    <div class="trail-step-label">Chặng 5 · Hoàn tất</div>
+                    <h3>Bàn giao tận nhà</h3>
+                    <p>Thú cưng được đưa về tận nhà cùng tư vấn chăm sóc tiếp theo từ đội ngũ Petlor.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ GALLERY ============================ -->
+<section class="pad" id="bo-suu-tap">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Bộ sưu tập</div>
+            <h2>Những khoảnh khắc tại Petlor</h2>
+            <p>Một vài hình ảnh từ phòng spa, phòng khám và sân chơi của chúng tôi.</p>
+        </div>
+        <div class="gal-filters reveal" id="galFilters">
+            <button class="active" data-filter="all">Tất cả</button>
+            <button data-filter="spa">Spa</button>
+            <button data-filter="vet">Khám bệnh</button>
+            <button data-filter="hotel">Khách sạn</button>
+            <button data-filter="train">Huấn luyện</button>
+        </div>
+        <div class="gal-grid reveal" id="galGrid">
+            @foreach (var item in Model.Gallery)
+            {
+                <partial name="_GalleryItem" model="item" />
+            }
+        </div>
+    </div>
+</section>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Xem ảnh phóng to">
+    <button class="lightbox-close" id="lbClose" aria-label="Đóng">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+    </button>
+    <button class="lightbox-nav prev" id="lbPrev" aria-label="Ảnh trước">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+    </button>
+    <img id="lbImage" src="" alt="" />
+    <button class="lightbox-nav next" id="lbNext" aria-label="Ảnh tiếp theo">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+    </button>
+    <div class="lightbox-caption" id="lbCaption"></div>
+</div>
+
+<!-- ============================ PRICING ============================ -->
+<section class="pad" id="bang-gia" style="background:var(--surface)">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Bảng giá</div>
+            <h2>Gói spa &amp; chăm sóc lông</h2>
+            <p>Giá minh bạch, không phụ phí ẩn. Chọn theo loài thú cưng của bạn bên dưới.</p>
+        </div>
+        <div class="pricing-toggle reveal">
+            <div class="toggle-pill" id="petToggle">
+                <button class="active" data-pet="dog">Chó</button>
+                <button data-pet="cat">Mèo</button>
+            </div>
+        </div>
+        <div class="price-grid reveal">
+            @foreach (var tier in Model.PriceTiers)
+            {
+                <partial name="_PriceCard" model="tier" />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============================ MEDICINE ADVICE ============================ -->
+<section class="pad" id="medicine-advice">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">
+                Tư vấn thuốc
+            </div>
+            <h2>Tư vấn thuốc thú cưng</h2>
+            <p>
+                Chọn loại thú cưng và vấn đề thường gặp để nhận gợi ý sản phẩm hỗ trợ.
+            </p>
+        </div>
+
+        <div class="medicine-layout">
+
+            <div class="medicine-left">
+                <h3>Loại thú cưng</h3>
+
+                <label>
+                    <input type="radio" name="petType" value="dog" checked />
+                    Chó
+                </label>
+
+                <label>
+                    <input type="radio" name="petType" value="cat" />
+                    Mèo
+                </label>
+
+                <h3 style="margin-top:24px">Vấn đề</h3>
+
+                <select id="problemSelect">
+                    <option>Ve rận</option>
+                    <option>Nấm da</option>
+                    <option>Tiêu chảy</option>
+                    <option>Bỏ ăn</option>
+                    <option>Viêm tai</option>
+                    <option>Thiếu vitamin</option>
+                </select>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        style="margin-top:20px"
+                        onclick="showAdvice()">
+                    Tư vấn ngay
+                </button>
+            </div>
+
+            <div class="medicine-right" id="medicineResult">
+                <h3>Chưa có kết quả tư vấn</h3>
+
+                <p>
+                    Hãy chọn loại thú cưng và một vấn đề phổ biến ở bên trái.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ============================ TEAM ============================ -->
+<section class="pad">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Đội ngũ</div>
+            <h2>Những người đồng hành cùng thú cưng của bạn</h2>
+            <p>Đội ngũ bác sĩ thú y, chuyên viên grooming và huấn luyện viên giàu kinh nghiệm.</p>
+        </div>
+        <div class="team-grid reveal">
+            @foreach (var member in Model.Team)
+            {
+                <partial name="_TeamCard" model="member" />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============================ TESTIMONIALS ============================ -->
+<section class="pad" id="danh-gia" style="background:var(--surface)">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Đánh giá</div>
+            <h2>Khách hàng nói gì về Petlor</h2>
+        </div>
+        <div class="testi-wrap reveal">
+            <div class="testi-track">
+                <div class="testi-slides" id="testiSlides">
+                    @foreach (var t in Model.Testimonials)
+                    {
+                        <partial name="_TestimonialSlide" model="t" />
+                    }
+                </div>
+            </div>
+            <div class="testi-controls">
+                <button class="testi-arrow" id="testiPrev" aria-label="Đánh giá trước">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+                </button>
+                <div class="testi-dots" id="testiDots"></div>
+                <button class="testi-arrow" id="testiNext" aria-label="Đánh giá tiếp theo">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ BLOG ============================ -->
+<section class="pad">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Cẩm nang</div>
+            <h2>Mẹo chăm sóc thú cưng từ Petlor</h2>
+            <p>Một vài kiến thức hữu ích để bạn chăm sóc thú cưng tốt hơn mỗi ngày.</p>
+        </div>
+        <div class="blog-grid reveal">
+            @foreach (var post in Model.BlogPosts)
+            {
+                <partial name="_BlogCard" model="post" />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============================ FAQ ============================ -->
+<section class="pad" id="faq" style="background:var(--surface)">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Hỏi đáp</div>
+            <h2>Câu hỏi thường gặp</h2>
+        </div>
+        <div class="faq-list reveal" id="faqList">
+            @for (var i = 0; i < Model.Faqs.Count; i++)
+            {
+                <partial name="_FaqItem" model="Model.Faqs[i]" view-data='new ViewDataDictionary(ViewData) { ["IsFirst"] = (i == 0) }' />
+            }
+        </div>
+    </div>
+</section>
+
+<!-- ============================ BOOKING ============================ -->
+<section class="pad" id="dat-lich">
+    <div class="container">
+        <div class="booking-panel reveal">
+            <div class="booking-info">
+                <div class="eyebrow" style="color:#d9e6de">Đặt lịch</div>
+                <h2>Đặt lịch hẹn cho thú cưng của bạn</h2>
+                <p>Điền thông tin bên dưới, đội ngũ Petlor sẽ liên hệ xác nhận trong vòng 15 phút trong giờ làm việc.</p>
+                <ul class="booking-info-list">
+                    <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></span>Mở cửa 7:00 – 20:00, tất cả các ngày trong tuần</li>
+                    <li><span class="icon"><partial name="_IconPhone" /></span>Hotline: 0901 234 567</li>
+                    <li><span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg></span>Hủy hoặc đổi lịch miễn phí trước 2 giờ</li>
+                </ul>
+            </div>
+
+            <form class="booking-form" id="bookingForm" asp-controller="Home" asp-action="BookingSubmit" method="post" novalidate>
+                @if (ViewBag.BookingSuccessName != null)
+                {
+                    <div class="form-success show" id="formSuccess">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                        <span>Đặt lịch thành công cho @ViewBag.BookingSuccessName! Petlor sẽ gọi xác nhận trong ít phút.</span>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-success" id="formSuccess">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                        <span>Đặt lịch thành công! Petlor sẽ gọi xác nhận trong ít phút.</span>
+                    </div>
+                }
+
+                <div class="form-row">
+                    <div class="field">
+                        <label asp-for="Booking.OwnerName">Họ và tên *</label>
+                        <input asp-for="Booking.OwnerName" placeholder="Nguyễn Văn A" />
+                        <span asp-validation-for="Booking.OwnerName" class="field-error-msg" style="display:block"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Booking.OwnerPhone">Số điện thoại *</label>
+                        <input asp-for="Booking.OwnerPhone" placeholder="09xx xxx xxx" />
+                        <span asp-validation-for="Booking.OwnerPhone" class="field-error-msg" style="display:block"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label asp-for="Booking.PetType">Loại thú cưng *</label>
+                        <select asp-for="Booking.PetType">
+                            <option value="">Chọn loại thú cưng</option>
+                            <option value="dog">Chó</option>
+                            <option value="cat">Mèo</option>
+                            <option value="other">Khác</option>
+                        </select>
+                        <span asp-validation-for="Booking.PetType" class="field-error-msg" style="display:block"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Booking.ServiceType">Dịch vụ cần đặt *</label>
+                        <select asp-for="Booking.ServiceType">
+                            <option value="">Chọn dịch vụ</option>
+                            @foreach (var svc in Model.Services)
+                            {
+                                <option>@svc.Title</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Booking.ServiceType" class="field-error-msg" style="display:block"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field">
+                        <label asp-for="Booking.BookDate">Ngày mong muốn *</label>
+                        <input asp-for="Booking.BookDate" type="date" min="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                        <span asp-validation-for="Booking.BookDate" class="field-error-msg" style="display:block"></span>
+                    </div>
+                    <div class="field">
+                        <label asp-for="Booking.BookTime">Giờ mong muốn *</label>
+                        <input asp-for="Booking.BookTime" type="time" />
+                        <span asp-validation-for="Booking.BookTime" class="field-error-msg" style="display:block"></span>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label asp-for="Booking.Note">Ghi chú thêm</label>
+                    <textarea asp-for="Booking.Note" placeholder="Ví dụ: bé khá nhút nhát, lông dài cần tỉa gọn..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-accent btn-block">Xác nhận đặt lịch</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ NEWSLETTER ============================ -->
+<section class="pad-sm">
+    <div class="container">
+        <div class="newsletter reveal">
+            <div>
+                <h3>Nhận mẹo chăm sóc thú cưng mỗi tuần</h3>
+                <p>Đăng ký để không bỏ lỡ ưu đãi và kiến thức hữu ích từ Petlor.</p>
+            </div>
+            <form class="newsletter-form" id="newsletterForm" asp-controller="Home" asp-action="NewsletterSubmit" method="post">
+                <input type="email" name="Email" id="newsletterEmail" placeholder="Nhập email của bạn" required />
+                <button type="submit" class="btn btn-primary">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ============================ CONTACT ============================ -->
+<section class="pad" id="lien-he">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Liên hệ</div>
+            <h2>Ghé thăm Petlor</h2>
+            <p>Chúng tôi luôn sẵn sàng đón tiếp bạn và thú cưng tại cơ sở TP. Hồ Chí Minh.</p>
+        </div>
+        <div class="contact-grid reveal">
+            <div class="contact-cards">
+                <div class="contact-card">
+                    <span class="ic"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z" /><circle cx="12" cy="10" r="3" /></svg></span>
+                    <div><h4>Địa chỉ</h4><p>12 Nguyễn Văn Trỗi, Phường Phú Nhuận, TP. Hồ Chí Minh</p></div>
+                </div>
+                <div class="contact-card">
+                    <span class="ic"><partial name="_IconPhone" /></span>
+                    <div><h4>Hotline &amp; cấp cứu</h4><p>0901 234 567 (hoạt động 24/7)</p></div>
+                </div>
+                <div class="contact-card">
+                    <span class="ic"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m4 6 8 7 8-7" /><rect x="3" y="5" width="18" height="14" rx="2" /></svg></span>
+                    <div><h4>Email</h4><p>hello@petlor.vn</p></div>
+                </div>
+                <div class="contact-card">
+                    <span class="ic"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg></span>
+                    <div><h4>Giờ làm việc</h4><p>Thứ 2 – Chủ nhật: 7:00 – 20:00</p></div>
+                </div>
+            </div>
+            <div class="map-frame">
+                <iframe src="https://www.google.com/maps?q=Ph%C3%BA%20Nhu%E1%BA%ADn%2C%20H%E1%BB%93%20Ch%C3%AD%20Minh%2C%20Vietnam&output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Bản đồ vị trí Petlor"></iframe>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
+
+    <script>
+        function showAdvice() {
+
+            const pet =
+                document.querySelector('input[name="petType"]:checked').value;
+
+            const problem =
+                document.getElementById('problemSelect').value;
+
+            const data = {
+
+                dog: {
+                    "Ve rận": ["NexGard", "Bravecto", "Frontline"],
+                    "Nấm da": ["Malaseb", "Douxo S3"],
+                    "Tiêu chảy": ["Pro-Kolin", "EnteroZoo"],
+                    "Bỏ ăn": ["Recovery Food", "Nutri-Plus Gel"],
+                    "Viêm tai": ["Epi-Otic", "Douxo Ear"],
+                    "Thiếu vitamin": ["Nutri-Plus Gel", "Virbac Multi"]
+                },
+
+                cat: {
+                    "Ve rận": ["Frontline Plus Cat", "Revolution Plus"],
+                    "Nấm da": ["Malaseb", "Douxo S3"],
+                    "Tiêu chảy": ["Pro-Kolin", "EnteroZoo"],
+                    "Bỏ ăn": ["Recovery Food Cat", "Nutri-Plus Gel"],
+                    "Viêm tai": ["Epi-Otic", "Douxo Ear"],
+                    "Thiếu vitamin": ["Nutri-Plus Gel", "Virbac Multi"]
+                }
+            };
+
+            const products = data[pet][problem];
+
+                    let html = `
+            <div class="medicine-result-card">
+
+                <span class="medicine-badge">
+                    Tư vấn cho ${pet === "dog" ? "Chó" : "Mèo"}
+                </span>
+
+                <h2>${problem}</h2>
+
+                <p>
+                    Các sản phẩm hỗ trợ thường được sử dụng:
+                </p>
+
+                <ul class="medicine-list">
+        `;
+
+            products.forEach(item => {
+                html += `<li>${item}</li>`;
+            });
+
+                    html += `
+                </ul>
+
+                <div class="medicine-warning">
+                    Thông tin chỉ mang tính tham khảo.
+                    Luôn tham khảo bác sĩ thú y trước khi sử dụng thuốc.
+                </div>
+
+            </div>
+        `;
+
+            document.getElementById("medicineResult").innerHTML = html;
+        }
+    </script>
+}

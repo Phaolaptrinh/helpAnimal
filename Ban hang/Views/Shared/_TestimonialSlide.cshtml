@@ -1,0 +1,14 @@
+@model Testimonial
+<div class="testi-slide">
+    <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">"@Model.Quote"</p>
+        <div class="testi-person">
+            <img src="@Model.AvatarUrl" alt="" />
+            <div>
+                <strong>@Model.Author</strong>
+                <span>@Model.PetRelation</span>
+            </div>
+        </div>
+    </div>
+</div>

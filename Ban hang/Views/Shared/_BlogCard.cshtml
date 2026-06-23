@@ -1,0 +1,13 @@
+@model BlogPost
+<article class="blog-card">
+    <img src="@Model.ImageUrl" alt="@Model.Title" loading="lazy" />
+    <div class="blog-body">
+        <span class="blog-tag">@Model.Tag</span>
+        <h3>@Model.Title</h3>
+        <p>@Model.Excerpt</p>
+        <div class="blog-meta">
+            <span>@Model.ReadTime</span>
+            <a href="#">Đọc tiếp →</a>
+        </div>
+    </div>
+</article>
