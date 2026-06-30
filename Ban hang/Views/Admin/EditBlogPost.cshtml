@@ -1,0 +1,50 @@
+﻿@model BlogPost
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa bài viết";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sửa bài viết</h3>
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3 text-center">
+            <img src="@Model.ImageUrl" width="200" class="rounded" style="object-fit:cover" />
+        </div>
+
+        <form asp-action="EditBlogPost" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Link ảnh đại diện</label>
+                <input asp-for="ImageUrl" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tag</label>
+                <input asp-for="Tag" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tiêu đề</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tóm tắt</label>
+                <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Thời gian đọc</label>
+                <input asp-for="ReadTime" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-action="BlogPosts" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

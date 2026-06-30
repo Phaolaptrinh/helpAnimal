@@ -62,7 +62,23 @@ public class HomeController : Controller
             return View("Index", vm);
         }
 
-        // TODO: lưu booking vào database ở đây nếu cần
+        // ← Lưu vào database thật sự
+        var newBooking = new Booking
+        {
+            OwnerName = booking.OwnerName,
+            OwnerPhone = booking.OwnerPhone,
+            PetType = booking.PetType,
+            ServiceType = booking.ServiceType,
+            BookDate = booking.BookDate!.Value,
+            BookTime = booking.BookTime!.Value,
+            Note = booking.Note,
+            Status = "Chờ xác nhận",
+            CreatedAt = DateTime.Now
+        };
+
+        _db.Bookings.Add(newBooking);
+        await _db.SaveChangesAsync();
+
         TempData["BookingSuccessName"] = booking.OwnerName;
         return RedirectToAction(nameof(Index));
     }

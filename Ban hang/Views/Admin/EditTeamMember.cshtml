@@ -1,0 +1,56 @@
+﻿@model TeamMember
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa nhân viên";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sửa thông tin nhân viên</h3>
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3 text-center">
+            <img src="@Model.AvatarUrl" width="80" height="80" class="rounded-circle" />
+        </div>
+
+        <form asp-action="EditTeamMember" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Họ tên</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Chức vụ</label>
+                <input asp-for="Role" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giới thiệu ngắn</label>
+                <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tên seed Avatar</label>
+                <input asp-for="AvatarSeed" class="form-control" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Màu nền (hex, không có #)</label>
+                    <input asp-for="BgColor" class="form-control" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Màu chữ (hex, không có #)</label>
+                    <input asp-for="TextColor" class="form-control" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-action="Team" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

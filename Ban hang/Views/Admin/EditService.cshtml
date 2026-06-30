@@ -1,0 +1,47 @@
+﻿@model ServiceItem
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa dịch vụ";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sửa dịch vụ</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="EditService" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Icon</label>
+                <select asp-for="IconKey" class="form-select">
+                    <option value="spa">Spa</option>
+                    <option value="vet">Thú y</option>
+                    <option value="hotel">Khách sạn</option>
+                    <option value="train">Huấn luyện</option>
+                    <option value="walk">Đi dạo</option>
+                    <option value="taxi">Pet Taxi</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tên dịch vụ</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giá</label>
+                <input asp-for="Price" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-action="Services" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,44 @@
+﻿@model BlogPost
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm bài viết";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Thêm bài viết mới</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="CreateBlogPost" method="post">
+
+            <div class="mb-3">
+                <label class="form-label">Link ảnh đại diện</label>
+                <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tag (Sức khỏe / Phòng bệnh / Dinh dưỡng...)</label>
+                <input asp-for="Tag" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tiêu đề</label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tóm tắt</label>
+                <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Thời gian đọc</label>
+                <input asp-for="ReadTime" class="form-control" placeholder="5 phút đọc" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a asp-action="BlogPosts" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

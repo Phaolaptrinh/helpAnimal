@@ -1,0 +1,71 @@
+﻿@model List<Booking>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Đặt lịch";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Danh sách đặt lịch (@Model.Count)</h3>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Khách hàng</th>
+                    <th>SĐT</th>
+                    <th>Thú cưng</th>
+                    <th>Dịch vụ</th>
+                    <th>Ngày hẹn</th>
+                    <th>Giờ hẹn</th>
+                    <th>Ghi chú</th>
+                    <th>Trạng thái</th>
+                    <th style="width: 130px">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td>@b.Id</td>
+                        <td>@b.OwnerName</td>
+                        <td>@b.OwnerPhone</td>
+                        <td>@b.PetType</td>
+                        <td>@b.ServiceType</td>
+                        <td>@b.BookDate.ToString("dd/MM/yyyy")</td>
+                        <td>@b.BookTime.ToString(@"hh\:mm")</td>
+                        <td>@(string.IsNullOrEmpty(b.Note) ? "—" : b.Note)</td>
+                        <td>
+                            <form asp-action="UpdateBookingStatus" method="post" class="d-flex gap-1">
+                                <input type="hidden" name="id" value="@b.Id" />
+                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option selected="@(b.Status == "Chờ xác nhận")" value="Chờ xác nhận">Chờ xác nhận</option>
+                                    <option selected="@(b.Status == "Đã xác nhận")" value="Đã xác nhận">Đã xác nhận</option>
+                                    <option selected="@(b.Status == "Hoàn thành")" value="Hoàn thành">Hoàn thành</option>
+                                    <option selected="@(b.Status == "Đã hủy")" value="Đã hủy">Đã hủy</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <form asp-action="DeleteBooking" asp-route-id="@b.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

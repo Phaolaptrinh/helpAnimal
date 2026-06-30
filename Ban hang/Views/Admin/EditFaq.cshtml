@@ -1,0 +1,30 @@
+﻿@model FaqItem
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa câu hỏi";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sửa câu hỏi</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="EditFaq" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Câu hỏi</label>
+                <input asp-for="Question" class="form-control" />
+                <span asp-validation-for="Question" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Câu trả lời</label>
+                <textarea asp-for="Answer" class="form-control" rows="4"></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-action="Faqs" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>

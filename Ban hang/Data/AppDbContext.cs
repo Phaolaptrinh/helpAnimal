@@ -30,4 +30,5 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<PriceTier> PriceTiers { get; set; }
     public DbSet<BlogPost> BlogPosts { get; set; }
     public DbSet<FaqItem> FaqItems { get; set; }
+    public DbSet<Booking> Bookings { get; set; }
 }

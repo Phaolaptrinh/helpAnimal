@@ -1,0 +1,50 @@
+﻿@model TeamMember
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Thêm nhân viên";
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Thêm nhân viên mới</h3>
+    </div>
+    <div class="card-body">
+        <form asp-action="CreateTeamMember" method="post">
+
+            <div class="mb-3">
+                <label class="form-label">Họ tên</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Chức vụ</label>
+                <input asp-for="Role" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Giới thiệu ngắn</label>
+                <textarea asp-for="Bio" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Tên seed Avatar (để tạo ảnh đại diện tự động)</label>
+                <input asp-for="AvatarSeed" class="form-control" placeholder="VD: Tran Minh Anh" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Màu nền (hex, không có #)</label>
+                    <input asp-for="BgColor" class="form-control" placeholder="2F6F4E" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Màu chữ (hex, không có #)</label>
+                    <input asp-for="TextColor" class="form-control" placeholder="ffffff" />
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Lưu</button>
+            <a asp-action="Team" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
