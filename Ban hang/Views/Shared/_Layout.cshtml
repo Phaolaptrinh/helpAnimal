@@ -33,21 +33,38 @@
             </a>
 
             <nav class="nav-links" aria-label="Điều hướng chính">
-                <a href="#dich-vu">Dịch vụ</a>
-                <a href="#medicine-advice">Tư vấn thuốc</a>
-                <a href="#quy-trinh">Quy trình</a>
-                <a href="#bo-suu-tap">Bộ sưu tập</a>
-                <a href="#bang-gia">Bảng giá</a>
-                <a href="#danh-gia">Đánh giá</a>
-                <a href="#lien-he">Liên hệ</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="dich-vu">Dịch vụ</a>
+                <a asp-controller="VetAi" asp-action="Index" class="nav-link">
+                    🩺 Bác sĩ AI
+                </a>
+                <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="bo-suu-tap">Bộ sưu tập</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="bang-gia">Bảng giá</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="danh-gia">Đánh giá</a>
+                <a asp-controller="Home" asp-action="Index" asp-fragment="lien-he">Liên hệ</a>
             </nav>
+
 
             <div class="nav-right">
                 <a class="nav-phone" href="tel:0901234567">
                     <partial name="_IconPhone" />
                     0974216401
                 </a>
-                <a href="#dat-lich" class="btn btn-primary btn-sm">Đặt lịch ngay</a>
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Index" class="nav-account" title="@User.Identity.Name">
+                        <span class="nav-account-icon">👤</span>
+                        <span class="nav-account-name">@User.Identity.Name</span>
+                    </a>
+                }
+                else
+                {
+                    <a asp-controller="Account" asp-action="Login" class="nav-account" title="Đăng nhập">
+                        <span class="nav-account-icon">👤</span>
+                        <span class="nav-account-name">Đăng nhập</span>
+                    </a>
+                }
+                <a asp-controller="Home" asp-action="Index" asp-fragment="dat-lich" class="btn btn-primary btn-sm">Đặt lịch ngay</a>
                 <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mobilePanel">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
                         <line x1="3" y1="6" x2="21" y2="6" />
@@ -57,17 +74,16 @@
                 </button>
             </div>
         </div>
-
         <div class="mobile-panel" id="mobilePanel">
-            <a href="#dich-vu">Dịch vụ</a>
-            <a href="#ve-chung-toi">Về chúng tôi</a>
-            <a href="#quy-trinh">Quy trình</a>
-            <a href="#bo-suu-tap">Bộ sưu tập</a>
-            <a href="#bang-gia">Bảng giá</a>
-            <a href="#danh-gia">Đánh giá</a>
-            <a href="#faq">Câu hỏi thường gặp</a>
-            <a href="#lien-he">Liên hệ</a>
-            <a href="#dat-lich" class="btn btn-primary btn-block">Đặt lịch ngay</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="dich-vu">Dịch vụ</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="ve-chung-toi">Về chúng tôi</a>
+            <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="bo-suu-tap">Bộ sưu tập</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="bang-gia">Bảng giá</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="danh-gia">Đánh giá</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="faq">Câu hỏi thường gặp</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="lien-he">Liên hệ</a>
+            <a asp-controller="Home" asp-action="Index" asp-fragment="dat-lich" class="btn btn-primary btn-block">Đặt lịch ngay</a>
         </div>
     </header>
 
@@ -143,11 +159,12 @@
     </div>
 
     <!-- jQuery + unobtrusive-validation power the [Required]/[RegularExpression]
-         attributes on BookingViewModel/NewsletterViewModel client-side, for free -->
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+     attributes on BookingViewModel/NewsletterViewModel client-side, for free -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

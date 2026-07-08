@@ -1,0 +1,35 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Đặt hàng thành công";
+}
+
+<section class="pad">
+    <div class="container">
+        <div class="order-success">
+            <div class="order-success-icon">✓</div>
+            <h2>Đặt hàng thành công!</h2>
+            <p>Mã đơn hàng <strong>#@Model.Id</strong> — cảm ơn bạn đã tin tưởng Petlor 🐾</p>
+            <p class="order-success-sub">Chúng tôi sẽ gọi điện xác nhận trong vòng 30 phút tới số @Model.CustomerPhone</p>
+
+            <div class="order-success-box">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="checkout-item">
+                        <div class="checkout-item-info">
+                            <span>@item.ProductName</span>
+                            <span class="checkout-item-qty">x@item.Quantity</span>
+                        </div>
+                        <span class="checkout-item-price">@((item.Price * item.Quantity).ToString("N0")) đ</span>
+                    </div>
+                }
+                <div class="summary-divider"></div>
+                <div class="summary-total">
+                    <span>Tổng cộng</span>
+                    <span>@Model.TotalAmount.ToString("N0") đ</span>
+                </div>
+            </div>
+
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Tiếp tục mua sắm</a>
+        </div>
+    </div>
+</section>

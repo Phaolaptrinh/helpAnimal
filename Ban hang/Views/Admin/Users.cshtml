@@ -1,0 +1,76 @@
+﻿@model List<AdminUserViewModel>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Tài khoản";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Danh sách tài khoản (@Model.Count)</h3>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Tên tài khoản</th>
+                    <th>Email</th>
+                    <th>SĐT</th>
+                    <th>Vai trò</th>
+                    <th>Đơn hàng</th>
+                    <th>Lịch đặt</th>
+                    <th style="width:160px">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@u.UserName</td>
+                        <td>@u.Email</td>
+                        <td>@u.PhoneNumber</td>
+                        <td>
+                            @if (u.IsAdmin)
+                            {
+                                <span class="badge text-bg-danger">Admin</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">Khách hàng</span>
+                            }
+                        </td>
+                        <td><span class="badge text-bg-primary">@u.TotalOrders</span></td>
+                        <td><span class="badge text-bg-info">@u.TotalBookings</span></td>
+                        <td>
+                            @if (!u.IsAdmin)
+                            {
+                                <form asp-action="ToggleLockUser" asp-route-id="@u.Id" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-warning" title="Khóa/Mở khóa">
+                                        <i class="bi bi-lock"></i>
+                                    </button>
+                                </form>
+                                <form asp-action="DeleteUser" asp-route-id="@u.Id" method="post" class="d-inline"
+                                      onsubmit="return confirm('Bạn chắc chắn muốn xóa tài khoản này?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">Không thể sửa</span>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

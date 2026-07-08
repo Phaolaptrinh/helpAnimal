@@ -1,29 +1,182 @@
 ﻿using Ban_hang.Data;
 using Ban_hang.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using System.Text.Json;
 namespace Ban_hang.Controllers;
 
 [Authorize(Roles = "Admin")] // Chỉ Admin mới vào được
 public class AdminController : Controller
 {
     private readonly AppDbContext _db;
-
-    public AdminController(AppDbContext db)
+    private readonly UserManager<IdentityUser> _userManager;
+    public AdminController(AppDbContext db, UserManager<IdentityUser> userManager)
     {
         _db = db;
+        _userManager = userManager;
     }
 
-    // GET /Admin
-    public async Task<IActionResult> Index()
+    // GET /Admin?range=7days
+    public async Task<IActionResult> Index(string range = "7days")
     {
         ViewData["Title"] = "Dashboard";
+        ViewData["CurrentRange"] = range;
+
+        DateTime rangeStart;
+        var today = DateTime.Now.Date;
+
+        switch (range)
+        {
+            case "30days":
+                rangeStart = today.AddDays(-29);
+                break;
+            case "thismonth":
+                rangeStart = new DateTime(today.Year, today.Month, 1);
+                break;
+            case "thisyear":
+                rangeStart = new DateTime(today.Year, 1, 1);
+                break;
+            default: // "7days"
+                rangeStart = today.AddDays(-6);
+                range = "7days";
+                break;
+        }
+
+        // Toàn bộ query bên dưới lọc theo rangeStart thay vì cố định 7 ngày
+        var totalBookings = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= rangeStart);
+        var pendingBookings = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= rangeStart && b.Status == "Chờ xác nhận");
+        var completedBookings = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= rangeStart && b.Status == "Hoàn thành");
+        var cancelledBookings = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= rangeStart && b.Status == "Đã hủy");
+        var confirmedBookings = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= rangeStart && b.Status == "Đã xác nhận");
+
+        ViewData["TotalBookings"] = totalBookings;
+        ViewData["PendingBookings"] = pendingBookings;
+        ViewData["CompletedBookings"] = completedBookings;
+        ViewData["CancelledBookings"] = cancelledBookings;
+
+        // Biểu đồ cột: số ngày hiển thị tùy theo range (tối đa hiển thị gọn 14 điểm cho 30 ngày)
+        var totalDays = (today - rangeStart).Days + 1;
+        var daysList = Enumerable.Range(0, totalDays)
+            .Select(i => rangeStart.AddDays(i))
+            .ToList();
+
+        var bookingsByDay = daysList.Select(day => new
+        {
+            Date = day.ToString("dd/MM"),
+            Count = _db.Bookings.Count(b => b.CreatedAt.Date == day)
+        }).ToList();
+
+        ViewData["DaysLabels"] = System.Text.Json.JsonSerializer.Serialize(bookingsByDay.Select(x => x.Date));
+        ViewData["DaysCounts"] = System.Text.Json.JsonSerializer.Serialize(bookingsByDay.Select(x => x.Count));
+
+        ViewData["StatusPending"] = pendingBookings;
+        ViewData["StatusConfirmed"] = confirmedBookings;
+        ViewData["StatusCompleted"] = completedBookings;
+        ViewData["StatusCancelled"] = cancelledBookings;
+
+        var topServices = await _db.Bookings
+            .Where(b => b.CreatedAt.Date >= rangeStart)
+            .GroupBy(b => b.ServiceType)
+            .Select(g => new { Service = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .ToListAsync();
+
+        ViewData["ServiceLabels"] = System.Text.Json.JsonSerializer.Serialize(topServices.Select(x => x.Service));
+        ViewData["ServiceCounts"] = System.Text.Json.JsonSerializer.Serialize(topServices.Select(x => x.Count));
+
+        var completionRate = totalBookings > 0 ? Math.Round((double)completedBookings / totalBookings * 100, 1) : 0;
+        ViewData["CompletionRate"] = completionRate;
+
+        var topPetType = await _db.Bookings
+            .Where(b => b.CreatedAt.Date >= rangeStart)
+            .GroupBy(b => b.PetType)
+            .Select(g => new { PetType = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .FirstOrDefaultAsync();
+
+        ViewData["TopPetType"] = topPetType?.PetType ?? "N/A";
+        ViewData["TopPetCount"] = topPetType?.Count ?? 0;
+
+        var recentBookings = await _db.Bookings
+            .OrderByDescending(b => b.CreatedAt)
+            .Take(5)
+            .ToListAsync();
+        ViewData["RecentBookings"] = recentBookings;
+
+        var allBookingsInRange = await _db.Bookings.Where(b => b.CreatedAt.Date >= rangeStart).ToListAsync();
+
+        var repeatCustomers = allBookingsInRange
+            .GroupBy(b => b.OwnerPhone)
+            .Where(g => g.Count() > 1)
+            .Select(g => new { Phone = g.Key, Name = g.First().OwnerName, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .Take(5)
+            .ToList();
+        ViewData["RepeatCustomers"] = repeatCustomers;
+
         ViewData["TotalServices"] = await _db.Services.CountAsync();
         ViewData["TotalTeam"] = await _db.TeamMembers.CountAsync();
         ViewData["TotalBlogs"] = await _db.BlogPosts.CountAsync();
         ViewData["TotalFaqs"] = await _db.FaqItems.CountAsync();
+        ViewData["TotalTestimonials"] = await _db.Testimonials.CountAsync();
+        ViewData["TotalPriceTiers"] = await _db.PriceTiers.CountAsync();
+
+        var startOfMonth = new DateTime(today.Year, today.Month, 1);
+        var startOfWeek = today.AddDays(-(int)today.DayOfWeek);
+
+        ViewData["BookingsToday"] = await _db.Bookings.CountAsync(b => b.CreatedAt.Date == today);
+        ViewData["BookingsThisWeek"] = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= startOfWeek);
+        ViewData["BookingsThisMonth"] = await _db.Bookings.CountAsync(b => b.CreatedAt.Date >= startOfMonth);
+
+        var firstBooking = await _db.Bookings.OrderBy(b => b.CreatedAt).FirstOrDefaultAsync();
+        double avgPerDay = 0;
+        if (firstBooking != null)
+        {
+            var daysSinceFirst = Math.Max(1, (today - firstBooking.CreatedAt.Date).Days + 1);
+            var allTimeTotal = await _db.Bookings.CountAsync();
+            avgPerDay = Math.Round((double)allTimeTotal / daysSinceFirst, 1);
+        }
+        ViewData["AvgBookingsPerDay"] = avgPerDay;
+
+        var peakHour = await _db.Bookings
+            .GroupBy(b => b.BookTime.Hours)
+            .Select(g => new { Hour = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .FirstOrDefaultAsync();
+        ViewData["PeakHour"] = peakHour != null ? $"{peakHour.Hour}:00 - {peakHour.Hour + 1}:00" : "N/A";
+
+        var allBookings = await _db.Bookings.ToListAsync();
+        var peakDayOfWeek = allBookings
+            .GroupBy(b => b.CreatedAt.DayOfWeek)
+            .Select(g => new { Day = g.Key, Count = g.Count() })
+            .OrderByDescending(x => x.Count)
+            .FirstOrDefault();
+
+        string[] vietnameseDays = { "Chủ nhật", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7" };
+        ViewData["PeakDayOfWeek"] = peakDayOfWeek != null ? vietnameseDays[(int)peakDayOfWeek.Day] : "N/A";
+
+        var uniqueCustomers = await _db.Bookings.Select(b => b.OwnerPhone).Distinct().CountAsync();
+        ViewData["TotalCustomers"] = uniqueCustomers;
+
+        var newCustomersThisMonth = allBookings
+            .GroupBy(b => b.OwnerPhone)
+            .Count(g => g.Min(b => b.CreatedAt) >= startOfMonth);
+        ViewData["NewCustomersThisMonth"] = newCustomersThisMonth;
+
+        var repeatCount = allBookings.GroupBy(b => b.OwnerPhone).Count(g => g.Count() > 1);
+        double retentionRate = uniqueCustomers > 0 ? Math.Round((double)repeatCount / uniqueCustomers * 100, 1) : 0;
+        ViewData["RetentionRate"] = retentionRate;
+
+        var leastService = await _db.Bookings
+            .GroupBy(b => b.ServiceType)
+            .Select(g => new { Service = g.Key, Count = g.Count() })
+            .OrderBy(x => x.Count)
+            .FirstOrDefaultAsync();
+        ViewData["LeastService"] = leastService?.Service ?? "N/A";
+
         return View();
     }
     // ============ XEM DANH SÁCH ============
@@ -392,5 +545,136 @@ public class AdminController : Controller
             TempData["Success"] = "Đã xóa câu hỏi!";
         }
         return RedirectToAction(nameof(Faqs));
+    }
+    // ============ XEM DANH SÁCH ĐƠN HÀNG ============
+    // GET /Admin/Orders
+    public async Task<IActionResult> Orders()
+    {
+        ViewData["Title"] = "Quản lý Đơn hàng";
+        var orders = await _db.Orders
+            .Include(o => o.Items)
+            .OrderByDescending(o => o.CreatedAt)
+            .ToListAsync();
+        return View(orders);
+    }
+
+    // GET /Admin/OrderDetail/5
+    public async Task<IActionResult> OrderDetail(int id)
+    {
+        var order = await _db.Orders
+            .Include(o => o.Items)
+            .FirstOrDefaultAsync(o => o.Id == id);
+
+        if (order == null) return NotFound();
+
+        ViewData["Title"] = "Chi tiết đơn hàng #" + order.Id;
+        return View(order);
+    }
+
+    // ============ ĐỔI TRẠNG THÁI ============
+    // POST /Admin/UpdateOrderStatus
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UpdateOrderStatus(int id, string status)
+    {
+        var order = await _db.Orders.FindAsync(id);
+        if (order != null)
+        {
+            order.Status = status;
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Đã cập nhật trạng thái đơn hàng!";
+        }
+        return RedirectToAction(nameof(Orders));
+    }
+
+    // ============ XÓA ============
+    // POST /Admin/DeleteOrder
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteOrder(int id)
+    {
+        var order = await _db.Orders.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id);
+        if (order != null)
+        {
+            _db.OrderItems.RemoveRange(order.Items);
+            _db.Orders.Remove(order);
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa đơn hàng!";
+        }
+        return RedirectToAction(nameof(Orders));
+    }
+    // ============ XEM DANH SÁCH NGƯỜI DÙNG ============
+    // GET /Admin/Users
+    public async Task<IActionResult> Users()
+    {
+        ViewData["Title"] = "Quản lý Tài khoản";
+
+        var allUsers = await _userManager.Users.ToListAsync();
+        var userList = new List<AdminUserViewModel>();
+
+        foreach (var u in allUsers)
+        {
+            var roles = await _userManager.GetRolesAsync(u);
+            var bookingCount = await _db.Bookings.CountAsync(b => b.OwnerPhone == u.PhoneNumber);
+            var orderCount = await _db.Orders.CountAsync(o => o.UserId == u.Id);
+
+            userList.Add(new AdminUserViewModel
+            {
+                Id = u.Id,
+                UserName = u.UserName ?? "",
+                Email = u.Email ?? "",
+                PhoneNumber = u.PhoneNumber ?? "Chưa cập nhật",
+                IsAdmin = roles.Contains("Admin"),
+                TotalBookings = bookingCount,
+                TotalOrders = orderCount
+            });
+        }
+
+        return View(userList);
+    }
+
+    // ============ KHÓA / MỞ KHÓA TÀI KHOẢN ============
+    // POST /Admin/ToggleLockUser
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ToggleLockUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user != null)
+        {
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                await _userManager.SetLockoutEndDateAsync(user, null);
+                TempData["Success"] = "Đã mở khóa tài khoản!";
+            }
+            else
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.MaxValue);
+                TempData["Success"] = "Đã khóa tài khoản!";
+            }
+        }
+        return RedirectToAction(nameof(Users));
+    }
+
+    // ============ XÓA TÀI KHOẢN ============
+    // POST /Admin/DeleteUser
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user != null)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+            if (roles.Contains("Admin"))
+            {
+                TempData["Success"] = "Không thể xóa tài khoản Admin!";
+                return RedirectToAction(nameof(Users));
+            }
+
+            await _userManager.DeleteAsync(user);
+            TempData["Success"] = "Đã xóa tài khoản!";
+        }
+        return RedirectToAction(nameof(Users));
     }
 }

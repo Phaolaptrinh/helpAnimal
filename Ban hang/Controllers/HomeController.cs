@@ -29,7 +29,7 @@ public class HomeController : Controller
             PriceTiers = await _db.PriceTiers.ToListAsync(),
             BlogPosts = await _db.BlogPosts.ToListAsync(),
             Faqs = await _db.FaqItems.ToListAsync(),
-            Gallery = new List<GalleryItem>(), // chưa có bảng Gallery
+            Gallery = await _db.GalleryItems.ToListAsync(),
             Booking = new BookingViewModel()
         };
 
@@ -56,7 +56,7 @@ public class HomeController : Controller
                 PriceTiers = await _db.PriceTiers.ToListAsync(),
                 BlogPosts = await _db.BlogPosts.ToListAsync(),
                 Faqs = await _db.FaqItems.ToListAsync(),
-                Gallery = new List<GalleryItem>(),
+                Gallery = await _db.GalleryItems.ToListAsync(),
                 Booking = booking
             };
             return View("Index", vm);

@@ -1,0 +1,236 @@
+﻿@model CartPageViewModel
+@{
+    ViewData["Title"] = "Giỏ hàng";
+    var total = Model.CartItems.Sum(c => c.Product!.Price * c.Quantity);
+    var totalItems = Model.CartItems.Sum(c => c.Quantity);
+}
+
+<section class="pad cart-page">
+    <div class="container">
+        <div class="cart-header">
+            <h2>Giỏ hàng của bạn</h2>
+            <a asp-controller="Product" asp-action="Index" class="cart-continue">← Tiếp tục mua sắm</a>
+        </div>
+
+        @if (!Model.CartItems.Any())
+        {
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🛒</div>
+                <h3>Giỏ hàng đang trống</h3>
+                <p>Ghé qua cửa hàng để chọn vài món cho boss nhà bạn nhé!</p>
+                <a asp-controller="Product" asp-action="Index" class="btn btn-primary">Khám phá sản phẩm</a>
+            </div>
+        }
+        else
+        {
+            <div class="cart-layout">
+                <!-- CỘT TRÁI: danh sách sản phẩm -->
+                <div class="cart-items-col">
+                    <div class="cart-items-head">
+                        <span>@totalItems sản phẩm trong giỏ</span>
+                    </div>
+
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="cart-row">
+                            <img src="@item.Product!.ImageUrl" alt="@item.Product.Name" class="cart-row-img" />
+                            <div class="cart-row-info">
+                                <h4>@item.Product.Name</h4>
+                                <span class="cart-row-price">@item.Product.Price.ToString("N0") đ</span>
+                            </div>
+                            <form asp-controller="Cart" asp-action="UpdateQuantity" method="post" class="cart-qty">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <button type="button" class="qty-btn qty-minus">−</button>
+                                <input type="number" name="quantity" value="@item.Quantity" min="0" class="qty-input" onchange="this.form.submit()" />
+                                <button type="button" class="qty-btn qty-plus">+</button>
+                            </form>
+                            <div class="cart-row-subtotal">@((item.Product.Price * item.Quantity).ToString("N0")) đ</div>
+                            <form asp-controller="Cart" asp-action="Remove" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <button type="submit" class="cart-row-remove" title="Xoá sản phẩm">✕</button>
+                            </form>
+                        </div>
+                    }
+
+                    @if (Model.RecentBookings.Any())
+                    {
+                        <div class="cart-bookings">
+                            <h4>📅 Dịch vụ bạn đã đặt gần đây</h4>
+                            @foreach (var b in Model.RecentBookings)
+                            {
+                                <div class="booking-row">
+                                    <div class="booking-row-main">
+                                        <strong>@b.ServiceType</strong>
+                                        <span>cho @b.PetType</span>
+                                    </div>
+                                    <div class="booking-row-date">@b.BookDate.ToString("dd/MM/yyyy") · @b.BookTime</div>
+                                    <span class="booking-status booking-status-@b.Status.Replace(" ", "").ToLower()">@b.Status</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+
+                <!-- CỘT PHẢI: tóm tắt đơn hàng -->
+                <div class="cart-summary-col">
+                    <div class="cart-summary-box">
+                        <h3>Tóm tắt đơn hàng</h3>
+
+                        <!-- Danh sách sản phẩm rút gọn -->
+                        <div class="summary-items">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="summary-item-row">
+                                    <img src="@item.Product!.ImageUrl" alt="@item.Product.Name" />
+                                    <div class="summary-item-info">
+                                        <span class="summary-item-name">@item.Product.Name</span>
+                                        <span class="summary-item-meta">@item.Product.Price.ToString("N0") đ × @item.Quantity</span>
+                                    </div>
+                                    <span class="summary-item-total">@((item.Product.Price * item.Quantity).ToString("N0")) đ</span>
+                                </div>
+                            }
+                        </div>
+
+                        <div class="voucher-box">
+                            <div class="voucher-input-row">
+                                <input type="text" id="voucherInput" placeholder="Nhập mã giảm giá" />
+                                <button type="button" id="applyVoucherBtn" class="btn btn-outline">Áp dụng</button>
+                            </div>
+                            <div id="voucherMessage" class="voucher-message"></div>
+                            <div class="voucher-suggestions">
+                                <span>Gợi ý:</span>
+                                <button type="button" class="voucher-tag" data-code="PETLOR10">PETLOR10</button>
+                                <button type="button" class="voucher-tag" data-code="FREESHIP">FREESHIP</button>
+                                <button type="button" class="voucher-tag" data-code="PET50K">PET50K</button>
+                            </div>
+                        </div>
+
+                        <div class="summary-divider"></div>
+
+                        <!-- Breakdown chi phí -->
+                        <div class="summary-divider"></div>
+                        <div class="summary-line">
+                            <span>Tạm tính (@totalItems sản phẩm)</span>
+                            <span id="subtotalDisplay">@total.ToString("N0") đ</span>
+                        </div>
+                        <div class="summary-line" id="discountLine" style="display:none">
+                            <span>Giảm giá (<span id="voucherCodeDisplay"></span>)</span>
+                            <span class="summary-discount">−<span id="discountAmount">0</span> đ</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Phí vận chuyển</span>
+                            <span class="summary-free">Miễn phí</span>
+                        </div>
+                        <div class="summary-divider"></div>
+                        <div class="summary-total">
+                            <span>Tổng thanh toán</span>
+                            <span id="grandTotalDisplay">@total.ToString("N0") đ</span>
+                        </div>
+                        <div class="summary-note">Đã bao gồm VAT (nếu có) · Thanh toán khi nhận hàng (COD)</div>
+
+                        <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-block cart-checkout-btn">
+                            Tiến hành đặt hàng →
+                        </a>
+
+                        <!-- Cam kết chi tiết -->
+                        <div class="cart-trust-detailed">
+                            <div class="trust-item">
+                                <span class="trust-icon">🚚</span>
+                                <div>
+                                    <strong>Giao nhanh 2–4 giờ</strong>
+                                    <span>Nội thành TP.HCM, các khu vực khác 1–2 ngày</span>
+                                </div>
+                            </div>
+                            <div class="trust-item">
+                                <span class="trust-icon">🔒</span>
+                                <div>
+                                    <strong>Thanh toán an toàn</strong>
+                                    <span>COD — kiểm tra hàng trước khi thanh toán</span>
+                                </div>
+                            </div>
+                            <div class="trust-item">
+                                <span class="trust-icon">↩️</span>
+                                <div>
+                                    <strong>Đổi trả trong 7 ngày</strong>
+                                    <span>Miễn phí đổi trả nếu sản phẩm lỗi từ nhà sản xuất</span>
+                                </div>
+                            </div>
+                            <div class="trust-item">
+                                <span class="trust-icon">📞</span>
+                                <div>
+                                    <strong>Hỗ trợ 24/7</strong>
+                                    <span>Gọi ngay <a href="tel:0901234567">0901 234 567</a> nếu cần tư vấn</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.qty-minus, .qty-plus').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const input = this.parentElement.querySelector('.qty-input');
+                let val = parseInt(input.value) || 1;
+                val = this.classList.contains('qty-plus') ? val + 1 : Math.max(0, val - 1);
+                input.value = val;
+                input.dispatchEvent(new Event('change'));
+            });
+        });
+
+        // ===== THÊM MỚI: xử lý voucher =====
+        const rawTotal = @total;
+
+        function bindVoucherEvents() {
+            document.querySelectorAll('.voucher-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+                    document.getElementById('voucherInput').value = tag.dataset.code;
+                    applyVoucher(tag.dataset.code);
+                });
+            });
+
+            document.getElementById('applyVoucherBtn').addEventListener('click', () => {
+                const code = document.getElementById('voucherInput').value.trim();
+                if (code) applyVoucher(code);
+            });
+        }
+
+        async function applyVoucher(code) {
+            const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value
+                || document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+            const res = await fetch('/Cart/ApplyVoucher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'RequestVerificationToken': token
+                },
+                body: `code=${encodeURIComponent(code)}`
+            });
+
+            const data = await res.json();
+            const msgBox = document.getElementById('voucherMessage');
+
+            if (data.success) {
+                msgBox.textContent = '✓ ' + data.message;
+                msgBox.className = 'voucher-message voucher-success';
+
+                document.getElementById('discountLine').style.display = 'flex';
+                document.getElementById('voucherCodeDisplay').textContent = data.voucherCode;
+                document.getElementById('discountAmount').textContent = data.discount;
+                document.getElementById('grandTotalDisplay').textContent = data.newTotal + ' đ';
+            } else {
+                msgBox.textContent = '✕ ' + data.message;
+                msgBox.className = 'voucher-message voucher-error';
+            }
+        }
+
+        bindVoucherEvents();
+    </script>
+}

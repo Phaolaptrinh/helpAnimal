@@ -32,7 +32,7 @@
         </div>
         <div class="hero-art reveal">
             <div class="frame">
-                <img src="https://loremflickr.com/900/1040/goldenretriever,dog/all?lock=101" alt="Chú chó Golden Retriever vui vẻ tại Petlor" loading="lazy" />
+                <img src="https://picsum.photos/seed/101/900/1040" alt="Chú chó Golden Retriever vui vẻ tại Petlor" loading="lazy" />
             </div>
             <div class="hero-badge b1">
                 <span class="icon">
@@ -112,7 +112,7 @@
 <section class="pad" id="ve-chung-toi">
     <div class="container about-grid">
         <div class="about-img reveal">
-            <img src="https://loremflickr.com/800/1000/veterinarian,clinic/all?lock=108" alt="Bác sĩ thú y Petlor đang khám cho một chú chó" loading="lazy" />
+            <img src="https://picsum.photos/seed/108/800/1000" alt="Bác sĩ thú y Petlor đang khám cho một chú chó" loading="lazy" />
             <div class="pill"><b>12 năm</b><span>đồng hành cùng thú cưng Việt</span></div>
         </div>
         <div class="reveal">
@@ -248,64 +248,6 @@
     </div>
 </section>
 
-<!-- ============================ MEDICINE ADVICE ============================ -->
-<section class="pad" id="medicine-advice">
-    <div class="container">
-        <div class="section-head center reveal">
-            <div class="eyebrow" style="justify-content:center;display:flex">
-                Tư vấn thuốc
-            </div>
-            <h2>Tư vấn thuốc thú cưng</h2>
-            <p>
-                Chọn loại thú cưng và vấn đề thường gặp để nhận gợi ý sản phẩm hỗ trợ.
-            </p>
-        </div>
-
-        <div class="medicine-layout">
-
-            <div class="medicine-left">
-                <h3>Loại thú cưng</h3>
-
-                <label>
-                    <input type="radio" name="petType" value="dog" checked />
-                    Chó
-                </label>
-
-                <label>
-                    <input type="radio" name="petType" value="cat" />
-                    Mèo
-                </label>
-
-                <h3 style="margin-top:24px">Vấn đề</h3>
-
-                <select id="problemSelect">
-                    <option>Ve rận</option>
-                    <option>Nấm da</option>
-                    <option>Tiêu chảy</option>
-                    <option>Bỏ ăn</option>
-                    <option>Viêm tai</option>
-                    <option>Thiếu vitamin</option>
-                </select>
-
-                <button type="button"
-                        class="btn btn-primary"
-                        style="margin-top:20px"
-                        onclick="showAdvice()">
-                    Tư vấn ngay
-                </button>
-            </div>
-
-            <div class="medicine-right" id="medicineResult">
-                <h3>Chưa có kết quả tư vấn</h3>
-
-                <p>
-                    Hãy chọn loại thú cưng và một vấn đề phổ biến ở bên trái.
-                </p>
-            </div>
-
-        </div>
-    </div>
-</section>
 
 <!-- ============================ TEAM ============================ -->
 <section class="pad">
@@ -528,73 +470,3 @@
     </div>
 </section>
 
-@section Scripts {
-    <script src="~/lib/jquery-validation/jquery.validate.min.js"></script>
-
-    <script>
-        function showAdvice() {
-
-            const pet =
-                document.querySelector('input[name="petType"]:checked').value;
-
-            const problem =
-                document.getElementById('problemSelect').value;
-
-            const data = {
-
-                dog: {
-                    "Ve rận": ["NexGard", "Bravecto", "Frontline"],
-                    "Nấm da": ["Malaseb", "Douxo S3"],
-                    "Tiêu chảy": ["Pro-Kolin", "EnteroZoo"],
-                    "Bỏ ăn": ["Recovery Food", "Nutri-Plus Gel"],
-                    "Viêm tai": ["Epi-Otic", "Douxo Ear"],
-                    "Thiếu vitamin": ["Nutri-Plus Gel", "Virbac Multi"]
-                },
-
-                cat: {
-                    "Ve rận": ["Frontline Plus Cat", "Revolution Plus"],
-                    "Nấm da": ["Malaseb", "Douxo S3"],
-                    "Tiêu chảy": ["Pro-Kolin", "EnteroZoo"],
-                    "Bỏ ăn": ["Recovery Food Cat", "Nutri-Plus Gel"],
-                    "Viêm tai": ["Epi-Otic", "Douxo Ear"],
-                    "Thiếu vitamin": ["Nutri-Plus Gel", "Virbac Multi"]
-                }
-            };
-
-            const products = data[pet][problem];
-
-                    let html = `
-            <div class="medicine-result-card">
-
-                <span class="medicine-badge">
-                    Tư vấn cho ${pet === "dog" ? "Chó" : "Mèo"}
-                </span>
-
-                <h2>${problem}</h2>
-
-                <p>
-                    Các sản phẩm hỗ trợ thường được sử dụng:
-                </p>
-
-                <ul class="medicine-list">
-        `;
-
-            products.forEach(item => {
-                html += `<li>${item}</li>`;
-            });
-
-                    html += `
-                </ul>
-
-                <div class="medicine-warning">
-                    Thông tin chỉ mang tính tham khảo.
-                    Luôn tham khảo bác sĩ thú y trước khi sử dụng thuốc.
-                </div>
-
-            </div>
-        `;
-
-            document.getElementById("medicineResult").innerHTML = html;
-        }
-    </script>
-}

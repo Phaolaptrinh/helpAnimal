@@ -3,6 +3,7 @@
 // Đây là bảng LƯU TRỮ trong database (khác với BookingViewModel chỉ là form nhập liệu)
 public class Booking
 {
+    public List<BookingPrice> Prices { get; set; } = new();
     public int Id { get; set; }
     public string OwnerName { get; set; } = "";
     public string OwnerPhone { get; set; } = "";

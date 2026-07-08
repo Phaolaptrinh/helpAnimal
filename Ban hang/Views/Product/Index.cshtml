@@ -1,0 +1,133 @@
+﻿@model ProductListViewModel
+@{
+    ViewData["Title"] = "Sản phẩm";
+}
+
+<form id="antiForgeryForm">@Html.AntiForgeryToken()</form>
+
+<section class="pad" id="san-pham">
+    <div class="container">
+        <div class="section-head center reveal">
+            <div class="eyebrow" style="justify-content:center;display:flex">Cửa hàng Petlor</div>
+            <h2>Sản phẩm cho thú cưng</h2>
+            <p>Thức ăn, đồ chơi, thuốc và phụ kiện — mọi thứ thú cưng của bạn cần.</p>
+        </div>
+
+        <!-- Thanh tìm kiếm -->
+        <form method="get" asp-action="Index" class="prod-search reveal">
+            <div class="prod-search-box">
+                <svg class="prod-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input type="text" name="search" value="@Model.SearchTerm" placeholder="Bạn đang tìm gì cho boss nhà mình?" />
+            </div>
+            <input type="hidden" name="categorySlug" value="@Model.SelectedCategorySlug" />
+            <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </form>
+
+        <!-- Lọc theo danh mục -->
+        <div class="prod-filters reveal">
+            <a asp-action="Index" asp-route-search="@Model.SearchTerm"
+               class="prod-chip @(string.IsNullOrEmpty(Model.SelectedCategorySlug) ? "active" : "")">
+                <span class="prod-chip-icon">🐾</span> Tất cả
+            </a>
+            @foreach (var cat in Model.Categories)
+            {
+                var icon = cat.Slug switch
+                {
+                    "thuc-an" => "🍖",
+                    "do-choi" => "🧸",
+                    "thuoc" => "💊",
+                    "phu-kien" => "🎀",
+                    _ => "🐾"
+                };
+                <a asp-action="Index" asp-route-categorySlug="@cat.Slug" asp-route-search="@Model.SearchTerm"
+                   class="prod-chip @(Model.SelectedCategorySlug == cat.Slug ? "active" : "")">
+                    <span class="prod-chip-icon">@icon</span> @cat.Name
+                </a>
+            }
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        @if (!Model.Products.Any())
+        {
+            <p class="reveal" style="text-align:center;padding:40px 0">Không tìm thấy sản phẩm phù hợp.</p>
+        }
+        else
+        {
+            <div class="prod-grid reveal">
+                @foreach (var p in Model.Products)
+                {
+                    <div class="prod-card">
+                        <div class="prod-img">
+                            <img src="@p.ImageUrl" alt="@p.Name" loading="lazy" />
+                            @if (p.OldPrice.HasValue)
+                            {
+                                <span class="prod-badge">Giảm giá</span>
+                            }
+                        </div>
+                        <div class="prod-body">
+                            <span class="prod-cat">@p.Category?.Name</span>
+                            <h4>@p.Name</h4>
+                            <p class="prod-desc">@p.Description</p>
+                            <div class="prod-price-row">
+                                <span class="prod-price">@p.Price.ToString("N0") đ</span>
+                                @if (p.OldPrice.HasValue)
+                                {
+                                    <span class="prod-old-price">@p.OldPrice.Value.ToString("N0") đ</span>
+                                }
+                            </div>
+                            @if (p.Stock > 0)
+                            {
+                                <button class="btn btn-primary btn-block" data-product-id="@p.Id">Thêm vào giỏ</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-block" disabled>Hết hàng</button>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+@section Scripts {
+    <script>
+        document.querySelectorAll('[data-product-id]').forEach(btn => {
+            btn.addEventListener('click', async function () {
+                const productId = this.getAttribute('data-product-id');
+                const token = document.querySelector('#antiForgeryForm input[name="__RequestVerificationToken"]')?.value;
+
+                try {
+                    const res = await fetch('/Cart/Add', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'RequestVerificationToken': token
+                        },
+                        body: `productId=${productId}&quantity=1`
+                    });
+
+                    if (res.status === 401) {
+                        window.location.href = '/Identity/Account/Login';
+                        return;
+                    }
+
+                    const data = await res.json();
+                    if (data.success) {
+                        this.textContent = 'Đã thêm ✓';
+                        setTimeout(() => { this.textContent = 'Thêm vào giỏ'; }, 1500);
+                        const badge = document.getElementById('cartCount');
+                        if (badge) badge.textContent = data.cartCount;
+                    } else {
+                        alert(data.message);
+                    }
+                } catch (err) {
+                    alert('Có lỗi xảy ra, thử lại sau.');
+                }
+            });
+        });
+    </script>
+}

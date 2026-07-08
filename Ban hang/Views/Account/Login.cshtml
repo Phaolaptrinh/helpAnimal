@@ -1,7 +1,7 @@
 ﻿@model LoginViewModel
 @{
-    Layout = null; // Trang login không dùng layout chung
-    ViewData["Title"] = "Đăng nhập Admin";
+    Layout = null;
+    ViewData["Title"] = "Đăng nhập — Petlor";
 }
 
 <!DOCTYPE html>
@@ -9,75 +9,206 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Đăng nhập — Petlor Admin</title>
-    <link rel="stylesheet" href="~/adminlte/css/adminlte.min.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.min.css" />
-</head>
-<body class="login-page bg-body-secondary">
+    <title>Đăng nhập — Petlor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f2f6ee 0%, #e8f0e0 100%);
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
 
-    <div class="login-box">
-        <div class="login-logo">
-            <b>🐾 Petlor</b> Admin
-        </div>
+        .auth-card {
+            background: #fffdf9;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(95,122,90,0.15);
+            padding: 44px 40px;
+            width: 100%;
+            max-width: 400px;
+        }
 
-        <div class="card">
-            <div class="card-body login-card-body">
-                <p class="login-box-msg">Đăng nhập để quản lý hệ thống</p>
+        .auth-brand {
+            text-align: center;
+            margin-bottom: 28px;
+        }
 
-                @if (!ViewData.ModelState.IsValid)
-                {
-                    <div class="alert alert-danger">
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            <div>@error.ErrorMessage</div>
-                        }
-                    </div>
+            .auth-brand .mark {
+                width: 44px;
+                height: 44px;
+                color: #5f7a5a;
+                margin: 0 auto 8px;
+            }
+
+            .auth-brand h1 {
+                font-family: 'Fraunces', serif;
+                font-size: 24px;
+                font-weight: 700;
+                color: #3d3a30;
+                margin: 0;
+            }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #7a7367;
+            font-size: 13.5px;
+            margin-bottom: 28px;
+        }
+
+        .auth-field {
+            margin-bottom: 18px;
+        }
+
+            .auth-field label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                color: #55503f;
+                margin-bottom: 6px;
+            }
+
+            .auth-field input {
+                width: 100%;
+                padding: 12px 16px;
+                border: 1.5px solid #ece2d0;
+                border-radius: 12px;
+                font-size: 14.5px;
+                font-family: inherit;
+                transition: border-color 0.2s;
+            }
+
+                .auth-field input:focus {
+                    outline: none;
+                    border-color: #5f7a5a;
                 }
 
-                <form asp-controller="Account" asp-action="Login" method="post">
-                    <div class="input-group mb-3">
-                        <input asp-for="Email"
-                               class="form-control"
-                               placeholder="Email" />
-                        <div class="input-group-text">
-                            <i class="bi bi-envelope"></i>
-                        </div>
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
+        .auth-error {
+            background: #fbebe6;
+            border: 1px solid #f0c4b8;
+            color: #a34b3a;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
 
-                    <div class="input-group mb-3">
-                        <input asp-for="Password"
-                               class="form-control"
-                               placeholder="Mật khẩu" />
-                        <div class="input-group-text">
-                            <i class="bi bi-lock"></i>
-                        </div>
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
+        .auth-remember {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            color: #55503f;
+            margin-bottom: 22px;
+        }
 
-                    <div class="row mb-3">
-                        <div class="col-8">
-                            <div class="form-check">
-                                <input asp-for="RememberMe"
-                                       class="form-check-input"
-                                       type="checkbox" />
-                                <label asp-for="RememberMe" class="form-check-label">
-                                    Ghi nhớ đăng nhập
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-primary btn-block w-100">
-                                Đăng nhập
-                            </button>
-                        </div>
-                    </div>
-                </form>
+        .auth-submit {
+            width: 100%;
+            background: #5f7a5a;
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
 
-            </div>
+            .auth-submit:hover {
+                background: #4b6349;
+            }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 13.5px;
+            color: #7a7367;
+        }
+
+            .auth-footer a {
+                color: #5f7a5a;
+                font-weight: 700;
+                text-decoration: none;
+            }
+
+        .auth-back {
+            display: block;
+            text-align: center;
+            margin-top: 16px;
+            font-size: 13px;
+            color: #a9835a;
+            text-decoration: none;
+        }
+
+        .text-danger {
+            color: #a34b3a;
+            font-size: 12.5px;
+            display: block;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="auth-brand">
+            <svg class="mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="24" cy="29" r="11" fill="currentColor" />
+                <circle cx="10" cy="16" r="5.5" fill="currentColor" />
+                <circle cx="38" cy="16" r="5.5" fill="currentColor" />
+                <circle cx="16" cy="7" r="4.5" fill="currentColor" />
+                <circle cx="32" cy="7" r="4.5" fill="currentColor" />
+            </svg>
+            <h1>Petlor</h1>
         </div>
+        <p class="auth-subtitle">Đăng nhập để quản lý đơn hàng và lịch hẹn của bạn</p>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="auth-error">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-controller="Account" asp-action="Login" method="post">
+            <div class="auth-field">
+                <label>Email</label>
+                <input asp-for="Email" placeholder="ban@email.com" autocomplete="email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="auth-field">
+                <label>Mật khẩu</label>
+                <input asp-for="Password" placeholder="••••••••" autocomplete="current-password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+                <label class="auth-remember" style="margin-bottom:0;">
+                    <input asp-for="RememberMe" type="checkbox" style="width:auto" />
+                    Ghi nhớ đăng nhập
+                </label>
+                <a asp-controller="Account" asp-action="ForgotPassword" style="font-size:13px; color:#5f7a5a; font-weight:600; text-decoration:none;">
+                    Quên mật khẩu?
+                </a>
+            </div>
+
+            <button type="submit" class="auth-submit">Đăng nhập</button>
+        </form>
+
+        <p class="auth-footer">
+            Chưa có tài khoản? <a asp-controller="Account" asp-action="Register">Đăng ký ngay</a>
+        </p>
+
+        <a asp-controller="Home" asp-action="Index" class="auth-back">← Quay về trang chủ</a>
     </div>
 
-    <script src="~/adminlte/js/adminlte.min.js"></script>
 </body>
 </html>

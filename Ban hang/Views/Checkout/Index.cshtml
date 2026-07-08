@@ -1,0 +1,277 @@
+﻿@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<section class="pad checkout-page">
+    <div class="container">
+
+        <!-- Progress bar -->
+        <div class="checkout-progress">
+            <div class="progress-step done">
+                <span class="progress-circle">✓</span>
+                <span>Giỏ hàng</span>
+            </div>
+            <div class="progress-line done"></div>
+            <div class="progress-step active">
+                <span class="progress-circle">2</span>
+                <span>Thông tin & Thanh toán</span>
+            </div>
+            <div class="progress-line"></div>
+            <div class="progress-step">
+                <span class="progress-circle">3</span>
+                <span>Hoàn tất</span>
+            </div>
+        </div>
+
+        <div asp-validation-summary="ModelOnly" class="checkout-error-summary"></div>
+
+        <div class="checkout-layout">
+            <!-- ============ CỘT TRÁI ============ -->
+            <div class="checkout-form-col">
+
+                <!-- Xem lại sản phẩm -->
+                <div class="checkout-block">
+                    <div class="checkout-block-head">
+                        <h3><span class="block-num">1</span> Kiểm tra đơn hàng</h3>
+                        <a asp-controller="Cart" asp-action="Index" class="checkout-edit-link">✎ Sửa giỏ hàng</a>
+                    </div>
+                    <div class="checkout-review-list">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="review-row">
+                                <img src="@item.Product!.ImageUrl" alt="@item.Product.Name" />
+                                <div class="review-info">
+                                    <span class="review-name">@item.Product.Name</span>
+                                    <span class="review-meta">Đơn giá: @item.Product.Price.ToString("N0") đ</span>
+                                </div>
+                                <div class="review-qty">x@item.Quantity</div>
+                                <div class="review-subtotal">@((item.Product.Price * item.Quantity).ToString("N0")) đ</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Thông tin giao hàng -->
+                <form asp-controller="Checkout" asp-action="PlaceOrder" method="post" id="checkoutForm">
+                    @Html.AntiForgeryToken()
+
+                    <!-- Thông tin giao hàng -->
+                    <div class="checkout-block">
+                        <div class="checkout-block-head">
+                            <h3><span class="block-num">2</span> Thông tin nhận hàng</h3>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label asp-for="CustomerName">Họ và tên người nhận</label>
+                                <div class="input-with-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    <input asp-for="CustomerName" class="form-control" placeholder="Nguyễn Văn A" />
+                                </div>
+                                <span asp-validation-for="CustomerName" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="CustomerPhone">Số điện thoại</label>
+                                <div class="input-with-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z" />
+                                    </svg>
+                                    <input asp-for="CustomerPhone" class="form-control" placeholder="09xx xxx xxx" />
+                                </div>
+                                <span asp-validation-for="CustomerPhone" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="ShippingAddress">Địa chỉ giao hàng</label>
+                            <div class="input-with-icon">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                    <circle cx="12" cy="10" r="3" />
+                                </svg>
+                                <input asp-for="ShippingAddress" class="form-control" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" />
+                            </div>
+                            <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Note">
+                                Ghi chú cho người giao hàng
+                                <span class="optional-tag">(không bắt buộc)</span>
+                            </label>
+                            <div class="input-with-icon input-with-icon-textarea">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                </svg>
+                                <textarea asp-for="Note" class="form-control" rows="3" placeholder="Ví dụ: giao giờ hành chính, gọi trước khi giao, để hàng trước cổng..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vận chuyển -->
+                    <div class="checkout-block">
+                        <div class="checkout-block-head">
+                            <h3><span class="block-num">3</span> Phương thức vận chuyển</h3>
+                        </div>
+                        <label class="option-card selected">
+                            <input type="radio" name="shipping" checked />
+                            <div class="option-card-body">
+                                <div class="option-card-title">
+                                    <span>🚚 Giao hàng tiêu chuẩn</span>
+                                    <span class="option-price">Miễn phí</span>
+                                </div>
+                                <span class="option-desc">Dự kiến giao trong 2–4 giờ (nội thành TP.HCM) hoặc 1–2 ngày (khu vực khác)</span>
+                            </div>
+                        </label>
+                    </div>
+
+                    <!-- Thanh toán -->
+                    <div class="checkout-block">
+                        <div class="checkout-block-head">
+                            <h3><span class="block-num">4</span> Phương thức thanh toán</h3>
+                        </div>
+
+                        <label class="option-card selected" data-payment="cod">
+                            <input type="radio" name="payment" value="cod" checked />
+                            <div class="option-card-body">
+                                <div class="option-card-title">
+                                    <span>💵 Thanh toán khi nhận hàng (COD)</span>
+                                </div>
+                                <span class="option-desc">Kiểm tra hàng trước khi thanh toán cho nhân viên giao hàng</span>
+                            </div>
+                        </label>
+
+                        <label class="option-card" data-payment="bank">
+                            <input type="radio" name="payment" value="bank" />
+                            <div class="option-card-body">
+                                <div class="option-card-title">
+                                    <span>🏦 Chuyển khoản ngân hàng</span>
+                                </div>
+                                <span class="option-desc">Quét mã QR hoặc chuyển khoản trực tiếp, đơn được xử lý ngay sau khi nhận thanh toán</span>
+                            </div>
+                        </label>
+
+                        <!-- Khối QR hiện ra khi chọn chuyển khoản -->
+                        <div id="bankTransferBox" class="bank-transfer-box" style="display:none">
+                            <div class="bank-qr">
+                                <div class="bank-qr-placeholder">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                        <rect x="3" y="3" width="7" height="7" />
+                                        <rect x="14" y="3" width="7" height="7" />
+                                        <rect x="3" y="14" width="7" height="7" />
+                                        <path d="M14 14h3v3h-3zM19 14h2M14 19h2M19 19h2" />
+                                    </svg>
+                                    <span>Mã QR sẽ hiện tại đây</span>
+                                </div>
+                            </div>
+                            <div class="bank-info">
+                                <div class="bank-info-row">
+                                    <span>Ngân hàng</span>
+                                    <strong>Vietcombank</strong>
+                                </div>
+                                <div class="bank-info-row">
+                                    <span>Số tài khoản</span>
+                                    <strong>0123 456 789 <button type="button" class="copy-btn" data-copy="0123456789">Sao chép</button></strong>
+                                </div>
+                                <div class="bank-info-row">
+                                    <span>Chủ tài khoản</span>
+                                    <strong>CÔNG TY TNHH PETLOR</strong>
+                                </div>
+                                <div class="bank-info-row">
+                                    <span>Nội dung CK</span>
+                                    <strong>PETLOR <span id="bankOrderRef">[Mã đơn hàng]</span></strong>
+                                </div>
+                                <p class="bank-note">⚠️ Đơn hàng sẽ được xác nhận sau khi Petlor nhận được thanh toán. Vui lòng chuyển khoản đúng nội dung để được xử lý nhanh nhất.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Điều khoản -->
+                    <label class="checkout-terms">
+                        <input type="checkbox" id="agreeTerms" required />
+                        Tôi đã kiểm tra kỹ thông tin đơn hàng và đồng ý với <a href="#" target="_blank">Điều khoản mua hàng</a> của Petlor
+                    </label>
+
+                    <button type="submit" id="submitOrderBtn" class="btn btn-primary btn-block checkout-submit" disabled>
+                        Xác nhận đặt hàng
+                    </button>
+                </form>
+            </div>
+
+            <!-- ============ CỘT PHẢI: tóm tắt cố định ============ -->
+            <div class="checkout-summary-col">
+                <div class="cart-summary-box checkout-sticky">
+                    <h3>Đơn hàng (@Model.CartItems.Sum(c => c.Quantity) sản phẩm)</h3>
+
+                    <div class="summary-items">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <div class="summary-item-row">
+                                <img src="@item.Product!.ImageUrl" alt="@item.Product.Name" />
+                                <div class="summary-item-info">
+                                    <span class="summary-item-name">@item.Product.Name</span>
+                                    <span class="summary-item-meta">@item.Product.Price.ToString("N0") đ × @item.Quantity</span>
+                                </div>
+                                <span class="summary-item-total">@((item.Product.Price * item.Quantity).ToString("N0")) đ</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-line">
+                        <span>Tạm tính</span>
+                        <span>@Model.Total.ToString("N0") đ</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Phí vận chuyển</span>
+                        <span class="summary-free">Miễn phí</span>
+                    </div>
+
+                    <div class="summary-divider"></div>
+
+                    <div class="summary-total">
+                        <span>Tổng thanh toán</span>
+                        <span>@Model.Total.ToString("N0") đ</span>
+                    </div>
+                    <div class="summary-note">Đã bao gồm thuế (nếu có) · Thanh toán khi nhận hàng</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        const agreeBox = document.getElementById('agreeTerms');
+        const submitBtn = document.getElementById('submitOrderBtn');
+        agreeBox.addEventListener('change', function () {
+            submitBtn.disabled = !this.checked;
+        });
+
+                // Toggle khối chuyển khoản khi chọn phương thức thanh toán
+        document.querySelectorAll('input[name="payment"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('.option-card[data-payment]').forEach(card => {
+                    card.classList.toggle('selected', card.dataset.payment === this.value);
+                });
+                document.getElementById('bankTransferBox').style.display = this.value === 'bank' ? 'flex' : 'none';
+            });
+        });
+
+        // Copy số tài khoản
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                navigator.clipboard.writeText(this.dataset.copy);
+                const old = this.textContent;
+                this.textContent = 'Đã chép ✓';
+                setTimeout(() => { this.textContent = old; }, 1500);
+            });
+        });
+    </script>
+}

@@ -1,0 +1,215 @@
+﻿@model RegisterViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Đăng ký — Petlor";
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng ký — Petlor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700&family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f2f6ee 0%, #e8f0e0 100%);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            padding: 24px 0;
+        }
+
+        .auth-card {
+            background: #fffdf9;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(95,122,90,0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .auth-brand {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+            .auth-brand .mark {
+                width: 40px;
+                height: 40px;
+                color: #5f7a5a;
+                margin: 0 auto 8px;
+            }
+
+            .auth-brand h1 {
+                font-family: 'Fraunces', serif;
+                font-size: 22px;
+                font-weight: 700;
+                color: #3d3a30;
+                margin: 0;
+            }
+
+        .auth-subtitle {
+            text-align: center;
+            color: #7a7367;
+            font-size: 13.5px;
+            margin-bottom: 24px;
+        }
+
+        .auth-field {
+            margin-bottom: 16px;
+        }
+
+            .auth-field label {
+                display: block;
+                font-size: 13px;
+                font-weight: 600;
+                color: #55503f;
+                margin-bottom: 6px;
+            }
+
+            .auth-field input {
+                width: 100%;
+                padding: 11px 16px;
+                border: 1.5px solid #ece2d0;
+                border-radius: 12px;
+                font-size: 14px;
+                font-family: inherit;
+                transition: border-color 0.2s;
+            }
+
+                .auth-field input:focus {
+                    outline: none;
+                    border-color: #5f7a5a;
+                }
+
+        .auth-error {
+            background: #fbebe6;
+            border: 1px solid #f0c4b8;
+            color: #a34b3a;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 18px;
+        }
+
+        .auth-submit {
+            width: 100%;
+            background: #5f7a5a;
+            color: #fff;
+            border: none;
+            padding: 13px;
+            border-radius: 999px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 6px;
+        }
+
+            .auth-submit:hover {
+                background: #4b6349;
+            }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13.5px;
+            color: #7a7367;
+        }
+
+            .auth-footer a {
+                color: #5f7a5a;
+                font-weight: 700;
+                text-decoration: none;
+            }
+
+        .auth-back {
+            display: block;
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            color: #a9835a;
+            text-decoration: none;
+        }
+
+        .text-danger {
+            color: #a34b3a;
+            font-size: 12.5px;
+            display: block;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-card">
+        <div class="auth-brand">
+            <svg class="mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="24" cy="29" r="11" fill="currentColor" />
+                <circle cx="10" cy="16" r="5.5" fill="currentColor" />
+                <circle cx="38" cy="16" r="5.5" fill="currentColor" />
+                <circle cx="16" cy="7" r="4.5" fill="currentColor" />
+                <circle cx="32" cy="7" r="4.5" fill="currentColor" />
+            </svg>
+            <h1>Petlor</h1>
+        </div>
+        <p class="auth-subtitle">Tạo tài khoản để theo dõi đơn hàng và lịch hẹn</p>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="auth-error">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <div>@error.ErrorMessage</div>
+                }
+            </div>
+        }
+
+        <form asp-controller="Account" asp-action="Register" method="post">
+            <div class="auth-field">
+                <label>Họ và tên</label>
+                <input asp-for="FullName" placeholder="Nguyễn Văn A" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="auth-field">
+                <label>Email</label>
+                <input asp-for="Email" placeholder="ban@email.com" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="auth-field">
+                <label>Số điện thoại</label>
+                <input asp-for="Phone" placeholder="0901234567" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+
+            <div class="auth-field">
+                <label>Mật khẩu</label>
+                <input asp-for="Password" placeholder="Tối thiểu 6 ký tự" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="auth-field">
+                <label>Xác nhận mật khẩu</label>
+                <input asp-for="ConfirmPassword" placeholder="Nhập lại mật khẩu" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="auth-submit">Tạo tài khoản</button>
+        </form>
+
+        <p class="auth-footer">
+            Đã có tài khoản? <a asp-controller="Account" asp-action="Login">Đăng nhập</a>
+        </p>
+
+        <a asp-controller="Home" asp-action="Index" class="auth-back">← Quay về trang chủ</a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,70 @@
+﻿@model List<Order>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Đơn hàng";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title mb-0">Danh sách đơn hàng (@Model.Count)</h3>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Khách hàng</th>
+                    <th>SĐT</th>
+                    <th>Địa chỉ</th>
+                    <th>Tổng tiền</th>
+                    <th>Ngày đặt</th>
+                    <th>Trạng thái</th>
+                    <th style="width:160px">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var o in Model)
+                {
+                    <tr>
+                        <td>#@o.Id</td>
+                        <td>@o.CustomerName</td>
+                        <td>@o.CustomerPhone</td>
+                        <td>@o.ShippingAddress</td>
+                        <td class="fw-bold">@o.TotalAmount.ToString("N0") đ</td>
+                        <td>@o.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>
+                            <form asp-action="UpdateOrderStatus" method="post" class="d-flex gap-1">
+                                <input type="hidden" name="id" value="@o.Id" />
+                                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                                    <option selected="@(o.Status == "Chờ xác nhận")" value="Chờ xác nhận">Chờ xác nhận</option>
+                                    <option selected="@(o.Status == "Đang giao")" value="Đang giao">Đang giao</option>
+                                    <option selected="@(o.Status == "Hoàn thành")" value="Hoàn thành">Hoàn thành</option>
+                                    <option selected="@(o.Status == "Đã huỷ")" value="Đã huỷ">Đã huỷ</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td>
+                            <a asp-action="OrderDetail" asp-route-id="@o.Id" class="btn btn-sm btn-info text-white">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <form asp-action="DeleteOrder" asp-route-id="@o.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa đơn này?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

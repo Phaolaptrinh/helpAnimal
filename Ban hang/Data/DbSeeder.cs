@@ -74,10 +74,64 @@ public static class DbSeeder
         if (!db.BlogPosts.Any())
         {
             db.BlogPosts.AddRange(
-                new BlogPost { ImageUrl = "https://loremflickr.com/500/320/dog,sick/all?lock=401", Tag = "Sức khỏe", Title = "5 dấu hiệu cho thấy thú cưng cần đi khám ngay", Excerpt = "Nhận biết sớm các dấu hiệu bất thường.", ReadTime = "5 phút đọc" },
-                new BlogPost { ImageUrl = "https://loremflickr.com/500/320/puppy,vaccine/all?lock=402", Tag = "Phòng bệnh", Title = "Lịch tiêm phòng cho chó mèo theo từng độ tuổi", Excerpt = "Tổng hợp đầy đủ các mốc tiêm phòng quan trọng.", ReadTime = "7 phút đọc" },
-                new BlogPost { ImageUrl = "https://loremflickr.com/500/320/dog,food,bowl/all?lock=403", Tag = "Dinh dưỡng", Title = "Cách chọn thức ăn phù hợp theo cân nặng", Excerpt = "Hướng dẫn tính khẩu phần ăn hợp lý.", ReadTime = "4 phút đọc" }
+                new BlogPost { ImageUrl = "https://picsum.photos/seed/401/500/320", Tag = "Sức khỏe", Title = "5 dấu hiệu cho thấy thú cưng cần đi khám ngay", Excerpt = "Nhận biết sớm các dấu hiệu bất thường.", ReadTime = "5 phút đọc" },
+                new BlogPost { ImageUrl = "https://picsum.photos/seed/402/500/320", Tag = "Phòng bệnh", Title = "Lịch tiêm phòng cho chó mèo theo từng độ tuổi", Excerpt = "Tổng hợp đầy đủ các mốc tiêm phòng quan trọng.", ReadTime = "7 phút đọc" },
+                new BlogPost { ImageUrl = "https://picsum.photos/seed/403/500/320", Tag = "Dinh dưỡng", Title = "Cách chọn thức ăn phù hợp theo cân nặng", Excerpt = "Hướng dẫn tính khẩu phần ăn hợp lý.", ReadTime = "4 phút đọc" }
             );
+        }
+
+        if (!db.GalleryItems.Any())
+        {
+            db.GalleryItems.AddRange(
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/501/500/500", Category = "spa", Caption = "Tắm gội thư giãn", Alt = "Spa cho thú cưng", LayoutClass = "wide" },
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/502/500/500", Category = "vet", Caption = "Khám sức khỏe định kỳ", Alt = "Khám bệnh thú cưng", LayoutClass = "" },
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/503/500/500", Category = "hotel", Caption = "Phòng nghỉ tiện nghi", Alt = "Khách sạn thú cưng", LayoutClass = "tall" },
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/504/500/500", Category = "train", Caption = "Huấn luyện cơ bản", Alt = "Huấn luyện thú cưng", LayoutClass = "" },
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/505/500/500", Category = "spa", Caption = "Cắt tỉa lông gọn gàng", Alt = "Cắt tỉa lông thú cưng", LayoutClass = "" },
+                new GalleryItem { ImageUrl = "https://picsum.photos/seed/506/500/500", Category = "vet", Caption = "Tiêm phòng đầy đủ", Alt = "Tiêm phòng thú cưng", LayoutClass = "wide" }
+            );
+            db.SaveChanges();
+        }
+
+        if (!db.ProductCategories.Any())
+        {
+            db.ProductCategories.AddRange(
+                new ProductCategory { Name = "Thức ăn", Slug = "thuc-an", Icon = "bi-basket" },
+                new ProductCategory { Name = "Đồ chơi", Slug = "do-choi", Icon = "bi-controller" },
+                new ProductCategory { Name = "Thuốc & Chăm sóc sức khỏe", Slug = "thuoc", Icon = "bi-capsule" },
+                new ProductCategory { Name = "Phụ kiện", Slug = "phu-kien", Icon = "bi-bag" }
+            );
+            db.SaveChanges();
+        }
+
+        if (!db.Products.Any())
+        {
+            var thucAn = db.ProductCategories.First(c => c.Slug == "thuc-an").Id;
+            var doChoi = db.ProductCategories.First(c => c.Slug == "do-choi").Id;
+            var thuoc = db.ProductCategories.First(c => c.Slug == "thuoc").Id;
+            var phuKien = db.ProductCategories.First(c => c.Slug == "phu-kien").Id;
+
+            db.Products.AddRange(
+                new Product { Name = "Hạt khô cho chó Royal Canin 3kg", Description = "Thức ăn dinh dưỡng cho chó trưởng thành", ImageUrl = "https://loremflickr.com/500/500/dogfood", Price = 350000, OldPrice = 400000, Stock = 50, CategoryId = thucAn },
+                new Product { Name = "Pate cho mèo Whiskas 400g", Description = "Pate thơm ngon, giàu dinh dưỡng", ImageUrl = "https://loremflickr.com/500/500/catfood", Price = 45000, Stock = 100, CategoryId = thucAn },
+                new Product { Name = "Bóng đồ chơi cho chó", Description = "Bóng cao su bền, an toàn cho thú cưng", ImageUrl = "https://loremflickr.com/500/500/dogtoy", Price = 60000, Stock = 80, CategoryId = doChoi },
+                new Product { Name = "Cần câu lông vũ cho mèo", Description = "Kích thích bản năng săn mồi của mèo", ImageUrl = "https://loremflickr.com/500/500/cattoy", Price = 35000, Stock = 60, CategoryId = doChoi },
+                new Product { Name = "Vitamin tổng hợp cho thú cưng", Description = "Bổ sung vitamin, tăng đề kháng", ImageUrl = "https://loremflickr.com/500/500/petvitamin", Price = 120000, Stock = 40, CategoryId = thuoc },
+                new Product { Name = "Thuốc nhỏ gáy trị ve rận", Description = "Diệt ve, rận, bọ chét hiệu quả", ImageUrl = "https://loremflickr.com/500/500/petmedicine", Price = 95000, Stock = 30, CategoryId = thuoc },
+                new Product { Name = "Vòng cổ da cho chó", Description = "Chất liệu da thật, bền đẹp", ImageUrl = "https://loremflickr.com/500/500/dogcollar", Price = 150000, OldPrice = 180000, Stock = 45, CategoryId = phuKien },
+                new Product { Name = "Balo vận chuyển thú cưng", Description = "Thoáng khí, an toàn khi di chuyển", ImageUrl = "https://loremflickr.com/500/500/petcarrier", Price = 280000, Stock = 20, CategoryId = phuKien }
+            );
+            db.SaveChanges();
+        }
+
+        if (!db.Vouchers.Any())
+        {
+            db.Vouchers.AddRange(
+                new Voucher { Code = "PETLOR10", Description = "Giảm 10% cho đơn từ 200.000đ", DiscountType = "percent", DiscountValue = 10, MinOrderAmount = 200000, MaxDiscountAmount = 50000, ExpiryDate = DateTime.Now.AddMonths(3) },
+                new Voucher { Code = "FREESHIP", Description = "Giảm trực tiếp 30.000đ", DiscountType = "fixed", DiscountValue = 30000, MinOrderAmount = 150000, ExpiryDate = DateTime.Now.AddMonths(3) },
+                new Voucher { Code = "PET50K", Description = "Giảm 50.000đ cho đơn từ 500.000đ", DiscountType = "fixed", DiscountValue = 50000, MinOrderAmount = 500000, ExpiryDate = DateTime.Now.AddMonths(3) }
+            );
+            db.SaveChanges();
         }
 
         if (!db.FaqItems.Any())

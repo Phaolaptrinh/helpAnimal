@@ -1,0 +1,153 @@
+﻿@model AccountDashboardViewModel
+@{
+    ViewData["Title"] = "Tài khoản của tôi";
+}
+
+<section class="pad account-page">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="account-header">
+            <div class="account-avatar">@Model.FullName.Substring(0, 1).ToUpper()</div>
+            <div>
+                <h2>@Model.FullName</h2>
+                <p>@Model.Email · 📞 @Model.Phone</p>
+            </div>
+            <form asp-controller="Account" asp-action="Logout" method="post" class="account-logout-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                </button>
+            </form>
+        </div>
+
+        <!-- Thống kê tổng quan -->
+        <div class="account-stats">
+            <div class="stat-card">
+                <span class="stat-icon">📦</span>
+                <span class="stat-value">@Model.TotalOrders</span>
+                <span class="stat-label">Đơn hàng đã đặt</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">📅</span>
+                <span class="stat-value">@Model.TotalBookings</span>
+                <span class="stat-label">Lịch dịch vụ đã đặt</span>
+            </div>
+            <div class="stat-card stat-highlight">
+                <span class="stat-icon">💰</span>
+                <span class="stat-value">@Model.TotalSpentOrders.ToString("N0") đ</span>
+                <span class="stat-label">Tổng chi tiêu mua sắm</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-icon">🐾</span>
+                <span class="stat-value">@Model.Bookings.Count(b => b.Status == "Hoàn thành")</span>
+                <span class="stat-label">Dịch vụ đã hoàn thành</span>
+            </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="account-tabs">
+            <button class="tab-btn active" data-tab="orders">🛍️ Đơn hàng đã mua</button>
+            <button class="tab-btn" data-tab="bookings">📅 Dịch vụ đã đặt</button>
+        </div>
+
+        <!-- TAB: Đơn hàng -->
+        <div class="tab-panel" id="tab-orders">
+            @if (!Model.Orders.Any())
+            {
+                <p class="empty-text">Bạn chưa có đơn hàng nào. <a asp-controller="Product" asp-action="Index">Mua sắm ngay</a></p>
+            }
+            else
+            {
+                @foreach (var order in Model.Orders)
+                {
+                    var statusClass = order.Status switch
+                    {
+                        "Hoàn thành" => "status-done",
+                        "Đã huỷ" => "status-cancel",
+                        "Đang giao" => "status-shipping",
+                        _ => "status-pending"
+                    };
+                    <div class="order-card">
+                        <div class="order-card-head">
+                            <div>
+                                <strong>Đơn hàng #@order.Id</strong>
+                                <span class="order-date">@order.CreatedAt.ToString("dd/MM/yyyy HH:mm")</span>
+                            </div>
+                            <span class="order-status @statusClass">@order.Status</span>
+                        </div>
+                        <div class="order-card-items">
+                            @foreach (var item in order.Items)
+                            {
+                                <div class="order-item-line">
+                                    <span>@item.ProductName × @item.Quantity</span>
+                                    <span>@((item.Price * item.Quantity).ToString("N0")) đ</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="order-card-footer">
+                            <span>Tổng cộng: <strong>@order.TotalAmount.ToString("N0") đ</strong></span>
+                            @if (order.Status == "Chờ xác nhận")
+                            {
+                                <form asp-controller="Account" asp-action="CancelOrder" method="post" onsubmit="return confirm('Bạn chắc chắn muốn huỷ đơn này?')">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="orderId" value="@order.Id" />
+                                    <button type="submit" class="btn-cancel-order">Huỷ đơn</button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        <!-- TAB: Dịch vụ đã đặt -->
+        <div class="tab-panel" id="tab-bookings" style="display:none">
+            @if (!Model.Bookings.Any())
+            {
+                <p class="empty-text">Bạn chưa đặt lịch dịch vụ nào. <a asp-controller="Home" asp-action="Index" asp-fragment="dat-lich">Đặt lịch ngay</a></p>
+            }
+            else
+            {
+                @foreach (var b in Model.Bookings)
+                {
+                    var statusClass = b.Status switch
+                    {
+                        "Hoàn thành" => "status-done",
+                        "Đã huỷ" => "status-cancel",
+                        "Đang thực hiện" => "status-shipping",
+                        _ => "status-pending"
+                    };
+                    <div class="order-card">
+                        <div class="order-card-head">
+                            <div>
+                                <strong>@b.ServiceType</strong>
+                                <span class="order-date">cho @b.PetType · @b.BookDate.ToString("dd/MM/yyyy")  @b.BookTime</span>
+                            </div>
+                            <span class="order-status @statusClass">@b.Status</span>
+                        </div>
+                        @if (!string.IsNullOrEmpty(b.Note))
+                        {
+                            <div class="order-card-items">
+                                <span class="booking-note">📝 @b.Note</span>
+                            </div>
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-panel').forEach(p => p.style.display = 'none');
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).style.display = 'block';
+            });
+        });
+    </script>
+}
