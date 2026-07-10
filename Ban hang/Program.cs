@@ -1,4 +1,4 @@
-﻿using Ban_hang.Data;
+using Ban_hang.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Ban_hang.Services;
@@ -48,7 +48,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// HTTPS redirection is handled by Replit's proxy — skip it here
 app.UseStaticFiles();
 app.UseRouting();
 

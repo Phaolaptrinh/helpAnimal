@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Ban_hang.Models;
@@ -16,12 +16,9 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseSqlServer(
-                "workstation id=petlor1111.mssql.somee.com;packet size=4096;user id=ghe;pwd=123456loi;data source=petlor1111.mssql.somee.com;persist security info=False;initial catalog=petlor1111;TrustServerCertificate=True;"
-            );
-        }
+        // Connection is configured via Program.cs using the ConnectionStrings:DefaultConnection
+        // setting (set through the ConnectionStrings__DefaultConnection environment variable / secret).
+        // Do not hardcode credentials here.
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
