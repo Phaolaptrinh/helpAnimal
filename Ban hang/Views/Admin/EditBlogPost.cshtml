@@ -4,6 +4,8 @@
     ViewData["Title"] = "Sửa bài viết";
 }
 
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.css" rel="stylesheet" />
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Sửa bài viết</h3>
@@ -34,8 +36,8 @@
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Tóm tắt</label>
-                <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+                <label class="form-label">Nội dung chi tiết</label>
+                <textarea id="summernoteEditor" asp-for="Excerpt" class="form-control" rows="6"></textarea>
             </div>
 
             <div class="mb-3">
@@ -48,3 +50,21 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.20/summernote-lite.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#summernoteEditor').summernote({
+                height: 250,
+                toolbar: [
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link']],
+                    ['view', ['fullscreen', 'codeview']]
+                ]
+            });
+        });
+    </script>
+}

@@ -8,15 +8,14 @@ namespace Ban_hang.Controllers;
 public class ProductController : Controller
 {
     private readonly AppDbContext _db;
-
     public ProductController(AppDbContext db)
     {
         _db = db;
     }
 
-    // GET /Product?categorySlug=do-choi&search=bong
+    // GET /Product?categorySlug=do-choi&search=bong&page=2
     [HttpGet]
-    public async Task<IActionResult> Index(string? categorySlug, string? search)
+    public async Task<IActionResult> Index(string? categorySlug, string? search, int page = 1)
     {
         var query = _db.Products
             .Include(p => p.Category)
@@ -33,12 +32,24 @@ public class ProductController : Controller
             query = query.Where(p => p.Name.Contains(search));
         }
 
+        int pageSize = 8;
+        int totalItems = await query.CountAsync();
+
+        var products = await query
+            .OrderByDescending(p => p.Id)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
         var vm = new ProductListViewModel
         {
-            Products = await query.OrderByDescending(p => p.Id).ToListAsync(),
+            Products = products,
             Categories = await _db.ProductCategories.ToListAsync(),
             SelectedCategorySlug = categorySlug,
-            SearchTerm = search
+            SearchTerm = search,
+            CurrentPage = page,
+            PageSize = pageSize,
+            TotalItems = totalItems
         };
 
         return View(vm);

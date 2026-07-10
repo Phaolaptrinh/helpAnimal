@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Ban_hang</RootNamespace>
+    <UserSecretsId>1d16d8f3-c1bd-4fab-882d-a77915693e56</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

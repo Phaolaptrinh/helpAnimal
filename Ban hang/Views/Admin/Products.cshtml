@@ -1,0 +1,84 @@
+﻿@model List<Product>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Sản phẩm";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h3 class="card-title mb-0">Danh sách sản phẩm (@Model.Count)</h3>
+        <div class="d-flex gap-2">
+            <a asp-action="Categories" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-tags"></i> Danh mục
+            </a>
+            <a asp-action="CreateProduct" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-lg"></i> Thêm sản phẩm
+            </a>
+        </div>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-striped mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh mục</th>
+                    <th>Giá</th>
+                    <th>Tồn kho</th>
+                    <th>Trạng thái</th>
+                    <th style="width:130px">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td>@p.Id</td>
+                        <td><img src="@p.ImageUrl" width="50" height="50" class="rounded" style="object-fit:cover" /></td>
+                        <td>@p.Name</td>
+                        <td>@(p.Category?.Name ?? "—")</td>
+                        <td>
+                            @p.Price.ToString("N0") đ
+                            @if (p.OldPrice.HasValue)
+                            {
+                                <br />
+                                <small class="text-muted text-decoration-line-through">@p.OldPrice.Value.ToString("N0") đ</small>
+                            }
+                        </td>
+                        <td>@p.Stock</td>
+                        <td>
+                            @if (p.IsActive)
+                            {
+                                <span class="badge text-bg-success">Đang bán</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-secondary">Đã ẩn</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="EditProduct" asp-route-id="@p.Id" class="btn btn-sm btn-warning">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn xóa?');">
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

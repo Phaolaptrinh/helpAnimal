@@ -677,4 +677,189 @@ public class AdminController : Controller
         }
         return RedirectToAction(nameof(Users));
     }
+    // ============ XEM DANH SÁCH SẢN PHẨM ============
+    // GET /Admin/Products
+    public async Task<IActionResult> Products()
+    {
+        ViewData["Title"] = "Quản lý Sản phẩm";
+        var products = await _db.Products
+            .Include(p => p.Category)
+            .OrderByDescending(p => p.Id)
+            .ToListAsync();
+        return View(products);
+    }
+
+    // ============ THÊM MỚI ============
+    // GET /Admin/CreateProduct
+    public async Task<IActionResult> CreateProduct()
+    {
+        ViewData["Title"] = "Thêm sản phẩm";
+        ViewData["Categories"] = await _db.ProductCategories.ToListAsync();
+        return View();
+    }
+
+    // POST /Admin/CreateProduct
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateProduct(Product product)
+    {
+        if (!ModelState.IsValid)
+        {
+            ViewData["Title"] = "Thêm sản phẩm";
+            ViewData["Categories"] = await _db.ProductCategories.ToListAsync();
+            return View(product);
+        }
+
+        _db.Products.Add(product);
+        await _db.SaveChangesAsync();
+        TempData["Success"] = "Đã thêm sản phẩm thành công!";
+        return RedirectToAction(nameof(Products));
+    }
+
+    // ============ SỬA ============
+    // GET /Admin/EditProduct/5
+    public async Task<IActionResult> EditProduct(int id)
+    {
+        var product = await _db.Products.FindAsync(id);
+        if (product == null) return NotFound();
+
+        ViewData["Title"] = "Sửa sản phẩm";
+        ViewData["Categories"] = await _db.ProductCategories.ToListAsync();
+        return View(product);
+    }
+
+    // POST /Admin/EditProduct/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditProduct(int id, Product product)
+    {
+        if (id != product.Id) return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            ViewData["Title"] = "Sửa sản phẩm";
+            ViewData["Categories"] = await _db.ProductCategories.ToListAsync();
+            return View(product);
+        }
+
+        _db.Products.Update(product);
+        await _db.SaveChangesAsync();
+        TempData["Success"] = "Đã cập nhật sản phẩm!";
+        return RedirectToAction(nameof(Products));
+    }
+
+    // ============ XÓA ============
+    // POST /Admin/DeleteProduct
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteProduct(int id)
+    {
+        var product = await _db.Products.FindAsync(id);
+        if (product != null)
+        {
+            _db.Products.Remove(product);
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Đã xóa sản phẩm!";
+        }
+        return RedirectToAction(nameof(Products));
+    }
+
+    // ============ QUẢN LÝ DANH MỤC SẢN PHẨM ============
+    // GET /Admin/Categories
+    public async Task<IActionResult> Categories()
+    {
+        ViewData["Title"] = "Quản lý Danh mục";
+        var categories = await _db.ProductCategories.ToListAsync();
+        return View(categories);
+    }
+
+    // POST /Admin/CreateCategory
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateCategory(ProductCategory category)
+    {
+        if (!string.IsNullOrWhiteSpace(category.Name))
+        {
+            _db.ProductCategories.Add(category);
+            await _db.SaveChangesAsync();
+            TempData["Success"] = "Đã thêm danh mục!";
+        }
+        return RedirectToAction(nameof(Categories));
+    }
+
+    // POST /Admin/DeleteCategory
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        var category = await _db.ProductCategories.FindAsync(id);
+        if (category != null)
+        {
+            var hasProducts = await _db.Products.AnyAsync(p => p.CategoryId == id);
+            if (hasProducts)
+            {
+                TempData["Success"] = "Không thể xóa danh mục đang có sản phẩm!";
+            }
+            else
+            {
+                _db.ProductCategories.Remove(category);
+                await _db.SaveChangesAsync();
+                TempData["Success"] = "Đã xóa danh mục!";
+            }
+        }
+        return RedirectToAction(nameof(Categories));
+    }
+    // ============ AJAX: LẤY DANH SÁCH DỊCH VỤ (JSON) ============
+    [HttpGet]
+    public async Task<IActionResult> GetServicesJson()
+    {
+        var services = await _db.Services.ToListAsync();
+        return Json(services);
+    }
+
+    // ============ AJAX: THÊM DỊCH VỤ ============
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> AjaxCreateService([FromBody] ServiceItem service)
+    {
+        if (string.IsNullOrWhiteSpace(service.Title))
+        {
+            return BadRequest(new { message = "Tên dịch vụ không được để trống." });
+        }
+
+        _db.Services.Add(service);
+        await _db.SaveChangesAsync();
+        return Json(new { success = true, message = "Đã thêm dịch vụ!", data = service });
+    }
+
+    // ============ AJAX: SỬA DỊCH VỤ ============
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> AjaxEditService([FromBody] ServiceItem service)
+    {
+        var existing = await _db.Services.FindAsync(service.Id);
+        if (existing == null) return NotFound();
+
+        existing.IconKey = service.IconKey;
+        existing.Title = service.Title;
+        existing.Description = service.Description;
+        existing.Price = service.Price;
+
+        await _db.SaveChangesAsync();
+        return Json(new { success = true, message = "Đã cập nhật dịch vụ!" });
+    }
+
+    // ============ AJAX: XÓA DỊCH VỤ ============
+    [HttpPost]
+    [IgnoreAntiforgeryToken]
+    public async Task<IActionResult> AjaxDeleteService(int id)
+    {
+        var service = await _db.Services.FindAsync(id);
+        if (service != null)
+        {
+            _db.Services.Remove(service);
+            await _db.SaveChangesAsync();
+        }
+        return Json(new { success = true, message = "Đã xóa dịch vụ!" });
+    }
 }

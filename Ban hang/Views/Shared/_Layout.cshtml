@@ -38,7 +38,7 @@
                     🩺 Bác sĩ AI
                 </a>
                 <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
-                <a asp-controller="Home" asp-action="Index" asp-fragment="bo-suu-tap">Bộ sưu tập</a>
+                <a asp-controller="Pet" asp-action="Index" class="nav-account" title="Hồ sơ thú cưng">🐾Bộ sưu tập</a>
                 <a asp-controller="Home" asp-action="Index" asp-fragment="bang-gia">Bảng giá</a>
                 <a asp-controller="Home" asp-action="Index" asp-fragment="danh-gia">Đánh giá</a>
                 <a asp-controller="Home" asp-action="Index" asp-fragment="lien-he">Liên hệ</a>
@@ -64,6 +64,7 @@
                         <span class="nav-account-name">Đăng nhập</span>
                     </a>
                 }
+                
                 <a asp-controller="Home" asp-action="Index" asp-fragment="dat-lich" class="btn btn-primary btn-sm">Đặt lịch ngay</a>
                 <button class="nav-toggle" id="navToggle" aria-label="Mở menu" aria-expanded="false" aria-controls="mobilePanel">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -78,7 +79,7 @@
             <a asp-controller="Home" asp-action="Index" asp-fragment="dich-vu">Dịch vụ</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="ve-chung-toi">Về chúng tôi</a>
             <a asp-controller="Product" asp-action="Index">Sản phẩm</a>
-            <a asp-controller="Home" asp-action="Index" asp-fragment="bo-suu-tap">Bộ sưu tập</a>
+            <a asp-controller="Pet" asp-action="Index" class="nav-account" title="Hồ sơ thú cưng">🐾Bộ sưu tập</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="bang-gia">Bảng giá</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="danh-gia">Đánh giá</a>
             <a asp-controller="Home" asp-action="Index" asp-fragment="faq">Câu hỏi thường gặp</a>

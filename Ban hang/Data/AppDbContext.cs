@@ -51,6 +51,8 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
         modelBuilder.Entity<Voucher>().Property(v => v.MinOrderAmount).HasPrecision(18, 2);
         modelBuilder.Entity<Voucher>().Property(v => v.MaxDiscountAmount).HasPrecision(18, 2);
         modelBuilder.Entity<Order>().Property(o => o.DiscountAmount).HasPrecision(18, 2);
+        modelBuilder.Entity<Pet>().Property(p => p.WeightKg).HasPrecision(6, 2);
+        modelBuilder.Entity<PetWeightLog>().Property(p => p.WeightKg).HasPrecision(6, 2);
     }
 
     public DbSet<ServiceItem> Services { get; set; }
@@ -68,5 +70,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Voucher> Vouchers { get; set; }
+    public DbSet<Pet> Pets { get; set; }
+    public DbSet<PetWeightLog> PetWeightLogs { get; set; }
 }
 

@@ -1,0 +1,82 @@
+﻿@model List<ProductCategory>
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Quản lý Danh mục";
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Thêm danh mục mới</h3>
+            </div>
+            <div class="card-body">
+                <form asp-action="CreateCategory" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Tên danh mục</label>
+                        <input name="Name" class="form-control" placeholder="VD: Đồ chơi" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Slug (dùng cho URL, không dấu, gạch ngang)</label>
+                        <input name="Slug" class="form-control" placeholder="VD: do-choi" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Icon (emoji hoặc để trống)</label>
+                        <input name="Icon" class="form-control" placeholder="VD: 🧸" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Thêm danh mục</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Danh sách danh mục (@Model.Count)</h3>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-striped mb-0 align-middle">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Icon</th>
+                            <th>Tên</th>
+                            <th>Slug</th>
+                            <th style="width:80px">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cat in Model)
+                        {
+                            <tr>
+                                <td>@cat.Id</td>
+                                <td>@cat.Icon</td>
+                                <td>@cat.Name</td>
+                                <td><code>@cat.Slug</code></td>
+                                <td>
+                                    <form asp-action="DeleteCategory" asp-route-id="@cat.Id" method="post"
+                                          onsubmit="return confirm('Xóa danh mục này?');">
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a asp-action="Products" class="btn btn-secondary mt-3">← Quay lại danh sách sản phẩm</a>

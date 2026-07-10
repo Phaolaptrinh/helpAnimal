@@ -63,6 +63,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a asp-controller="Admin" asp-action="Products" asp-area="" class="nav-link">
+                                <i class="bi bi-box-seam nav-icon"></i>
+                                <p>Sản phẩm</p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a asp-controller="Admin" asp-action="Team" asp-area="" class="nav-link">
                                 <i class="bi bi-people nav-icon"></i>
                                 <p>Đội ngũ</p>
@@ -124,9 +130,11 @@
 
     </div>
 
+    <!-- jQuery (cần cho Summernote và AdminLTE) -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+
     <!-- AdminLTE JS -->
     <script src="~/adminlte/js/adminlte.min.js"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

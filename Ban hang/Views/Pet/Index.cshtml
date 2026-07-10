@@ -1,0 +1,68 @@
+﻿@model List<Pet>
+@{
+    ViewData["Title"] = "Hồ sơ thú cưng";
+}
+
+<section class="pad pet-page">
+    <div class="container">
+        <div class="pet-page-head">
+            <div>
+                <h2>Hồ sơ thú cưng của bạn</h2>
+                <p>Quản lý thông tin, theo dõi sức khoẻ và lịch sử chăm sóc cho từng bé.</p>
+            </div>
+            <a asp-action="Create" class="btn btn-primary">+ Thêm thú cưng</a>
+        </div>
+
+        @if (TempData["PetSuccess"] != null)
+        {
+            <div class="pet-alert-success">@TempData["PetSuccess"]</div>
+        }
+
+        @if (!Model.Any())
+        {
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🐾</div>
+                <h3>Chưa có hồ sơ thú cưng nào</h3>
+                <p>Thêm hồ sơ để Petlor chăm sóc bé tốt hơn — nhắc lịch, gợi ý sản phẩm phù hợp và lưu lịch sử sức khoẻ.</p>
+                <a asp-action="Create" class="btn btn-primary">Thêm thú cưng đầu tiên</a>
+            </div>
+        }
+        else
+        {
+            <div class="pet-grid">
+                @foreach (var pet in Model)
+                {
+                    var age = pet.BirthDate.HasValue
+                    ? (DateTime.Now.Year - pet.BirthDate.Value.Year) + " tuổi"
+                    : "Chưa rõ tuổi";
+                    <div class="pet-card">
+                        <img src="@pet.AvatarUrl" alt="@pet.Name" class="pet-card-avatar" />
+                        <div class="pet-card-body">
+                            <h4>@pet.Name</h4>
+                            <span class="pet-card-meta">@pet.Species @(string.IsNullOrEmpty(pet.Breed) ? "" : "· " + pet.Breed)</span>
+                            <div class="pet-card-tags">
+                                <span class="pet-tag">🎂 @age</span>
+                                @if (pet.WeightKg.HasValue)
+                                {
+                                    <span class="pet-tag">⚖️ @pet.WeightKg kg</span>
+                                }
+                                @if (!string.IsNullOrEmpty(pet.Gender))
+                                {
+                                    <span class="pet-tag">@(pet.Gender == "Đực" ? "♂️" : "♀️") @pet.Gender</span>
+                                }
+                            </div>
+                            <div class="pet-card-actions">
+                                <a asp-action="Details" asp-route-id="@pet.Id" class="btn-pet-view">Xem hồ sơ</a>
+                                <a asp-action="Edit" asp-route-id="@pet.Id" class="btn-pet-edit">Sửa</a>
+                                <form asp-action="Delete" asp-route-id="@pet.Id" method="post" onsubmit="return confirm('Xoá hồ sơ bé @pet.Name?')">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn-pet-delete">Xoá</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

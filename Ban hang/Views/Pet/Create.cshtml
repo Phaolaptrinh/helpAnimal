@@ -1,0 +1,334 @@
+﻿@model PetFormViewModel
+@{
+    ViewData["Title"] = "Thêm thú cưng";
+}
+
+<section class="pad pet-wizard-section">
+    <div class="container pet-wizard-container">
+
+        <!-- Progress -->
+        <div class="wizard-progress">
+            <div class="wizard-step active" data-step-indicator="1">
+                <span class="wizard-circle">1</span><span>Bé là ai?</span>
+            </div>
+            <div class="wizard-line"></div>
+            <div class="wizard-step" data-step-indicator="2">
+                <span class="wizard-circle">2</span><span>Vài nét về bé</span>
+            </div>
+            <div class="wizard-line"></div>
+            <div class="wizard-step" data-step-indicator="3">
+                <span class="wizard-circle">3</span><span>Sức khoẻ</span>
+            </div>
+            <div class="wizard-line"></div>
+            <div class="wizard-step" data-step-indicator="4">
+                <span class="wizard-circle">4</span><span>Hoàn tất</span>
+            </div>
+        </div>
+
+        <form asp-action="Create" method="post" id="petWizardForm" class="wizard-form">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <!-- ===== BƯỚC 1: Loài + Tên ===== -->
+            <div class="wizard-panel active" data-step="1">
+                <h2 id="greetingText">Bé nhà bạn là ai vậy? 🐾</h2>
+                <p class="wizard-sub">Chọn loài và đặt tên cho bé nhé</p>
+
+                <div class="species-picker">
+                    <label class="species-card">
+                        <input type="radio" name="speciesPick" value="Chó" />
+                        <span class="species-emoji">🐶</span>
+                        <span>Chó</span>
+                    </label>
+                    <label class="species-card">
+                        <input type="radio" name="speciesPick" value="Mèo" />
+                        <span class="species-emoji">🐱</span>
+                        <span>Mèo</span>
+                    </label>
+                    <label class="species-card">
+                        <input type="radio" name="speciesPick" value="Khác" />
+                        <span class="species-emoji">🐰</span>
+                        <span>Khác</span>
+                    </label>
+                </div>
+                <input asp-for="Species" type="hidden" id="SpeciesHidden" />
+                <span asp-validation-for="Species" class="text-danger"></span>
+
+                <div class="form-group" style="margin-top:20px">
+                    <label asp-for="Name">Tên của bé</label>
+                    <input asp-for="Name" id="NameInput" class="form-control" placeholder="VD: Milu" autocomplete="off" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+            </div>
+
+            <!-- ===== BƯỚC 2: Giống + Giới tính + Ngày sinh ===== -->
+            <div class="wizard-panel" data-step="2">
+                <h2><span id="petNameEcho1">Bé</span> có những nét gì đặc biệt? ✨</h2>
+                <p class="wizard-sub">Thông tin này giúp Petlor chăm sóc bé đúng cách hơn</p>
+
+                <div class="form-group">
+                    <label asp-for="Breed">Giống</label>
+                    <input asp-for="Breed" class="form-control" placeholder="VD: Poodle, Anh lông ngắn, Husky..." />
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính</label>
+                    <div class="gender-picker">
+                        <label class="gender-card">
+                            <input type="radio" name="genderPick" value="Đực" />
+                            <span>♂️</span> Đực
+                        </label>
+                        <label class="gender-card">
+                            <input type="radio" name="genderPick" value="Cái" />
+                            <span>♀️</span> Cái
+                        </label>
+                    </div>
+                    <input asp-for="Gender" type="hidden" id="GenderHidden" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BirthDate">Ngày sinh (nếu biết)</label>
+                    <input asp-for="BirthDate" id="BirthDateInput" class="form-control" />
+                    <span id="ageEcho" class="age-echo"></span>
+                </div>
+            </div>
+
+            <!-- ===== BƯỚC 3: Cân nặng + Ảnh + Ghi chú ===== -->
+            <div class="wizard-panel" data-step="3">
+                <h2>Ngoại hình &amp; sức khoẻ của <span id="petNameEcho2">bé</span> 🩺</h2>
+                <p class="wizard-sub">Giúp AI bác sĩ Petlor tư vấn chính xác hơn cho bé</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="WeightKg">Cân nặng hiện tại (kg)</label>
+                        <input asp-for="WeightKg" type="number" step="0.1" class="form-control" placeholder="VD: 4.5" />
+                        <span asp-validation-for="WeightKg" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AvatarUrl">Ảnh đại diện (không bắt buộc)</label>
+                        <input asp-for="AvatarUrl" id="AvatarInput" class="form-control" placeholder="Dán link ảnh, hoặc bỏ trống dùng ảnh mặc định" />
+                    </div>
+                </div>
+
+                <div class="avatar-help">
+                    <strong>💡 Cách lấy đúng link ảnh:</strong>
+                    Nếu lấy ảnh từ Google, vào Google Images → bấm vào ảnh cho phóng to →
+                    <strong>chuột phải vào ảnh → "Sao chép địa chỉ hình ảnh"</strong> rồi dán vào đây.
+                    Link đúng phải kết thúc bằng <code>.jpg</code>, <code>.png</code> hoặc <code>.webp</code> —
+                    không phải link trang <code>google.com/imgres...</code>.
+                </div>
+                <div id="avatarUrlStatus" class="avatar-url-status"></div>
+
+                <div class="avatar-preview-box">
+                    <img id="avatarPreviewImg" src="https://loremflickr.com/300/300/pet" alt="preview" onerror="this.src='https://loremflickr.com/300/300/pet'" />
+                    <span id="avatarPreviewText">Ảnh đại diện sẽ hiện như thế này (mặc định)</span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Note">Ghi chú (dị ứng, bệnh nền, tính cách...)</label>
+                    <textarea asp-for="Note" class="form-control" rows="3" placeholder="VD: dị ứng hải sản, hay nhút nhát với người lạ..."></textarea>
+                </div>
+            </div>
+
+            <!-- ===== BƯỚC 4: Preview thẻ hồ sơ ===== -->
+            <div class="wizard-panel" data-step="4">
+                <h2>Hồ sơ đã sẵn sàng! 🎉</h2>
+                <p class="wizard-sub">Kiểm tra lại thông tin trước khi tạo hồ sơ cho bé</p>
+
+                <div class="pet-id-card">
+                    <img id="cardAvatar" src="https://loremflickr.com/300/300/pet" alt="avatar" />
+                    <div class="pet-id-card-body">
+                        <h3 id="cardName">—</h3>
+                        <span id="cardSpecies" class="pet-id-card-species">—</span>
+                        <div class="pet-id-card-tags" id="cardTags"></div>
+                        <p id="cardNote" class="pet-id-card-note"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nút điều hướng -->
+            <div class="wizard-nav">
+                <button type="button" id="wizardBack" class="btn-wizard-back" style="visibility:hidden">← Quay lại</button>
+                <button type="button" id="wizardNext" class="btn btn-primary">Tiếp tục →</button>
+                <button type="submit" id="wizardSubmit" class="btn btn-primary" style="display:none">🎉 Tạo hồ sơ cho bé</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let avatarUrlValid = true; // mặc định true vì để trống vẫn hợp lệ (dùng ảnh mặc định)
+
+        function showStep(step) {
+            document.querySelectorAll('.wizard-panel').forEach(p => {
+                p.classList.toggle('active', parseInt(p.dataset.step) === step);
+            });
+            document.querySelectorAll('.wizard-step').forEach(s => {
+                const n = parseInt(s.dataset.stepIndicator);
+                s.classList.toggle('active', n === step);
+                s.classList.toggle('done', n < step);
+            });
+            document.getElementById('wizardBack').style.visibility = step === 1 ? 'hidden' : 'visible';
+            document.getElementById('wizardNext').style.display = step === totalSteps ? 'none' : 'inline-flex';
+            document.getElementById('wizardSubmit').style.display = step === totalSteps ? 'inline-flex' : 'none';
+
+            if (step === totalSteps) fillPreviewCard();
+        }
+
+        function validateStep(step) {
+            if (step === 1) {
+                const species = document.getElementById('SpeciesHidden').value;
+                const name = document.getElementById('NameInput').value.trim();
+                if (!species) { alert('Vui lòng chọn loài cho bé'); return false; }
+                if (!name) { alert('Vui lòng nhập tên bé'); return false; }
+            }
+            if (step === 3) {
+                if (!avatarUrlValid) {
+                    alert('Link ảnh đại diện không hợp lệ. Vui lòng sửa lại hoặc xoá trống để dùng ảnh mặc định.');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        document.getElementById('wizardNext').addEventListener('click', () => {
+            if (!validateStep(currentStep)) return;
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+
+        document.getElementById('wizardBack').addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        // Chọn loài
+        document.querySelectorAll('input[name="speciesPick"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('.species-card').forEach(c => c.classList.remove('selected'));
+                this.closest('.species-card').classList.add('selected');
+                document.getElementById('SpeciesHidden').value = this.value;
+            });
+        });
+
+        // Chọn giới tính
+        document.querySelectorAll('input[name="genderPick"]').forEach(radio => {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('.gender-card').forEach(c => c.classList.remove('selected'));
+                this.closest('.gender-card').classList.add('selected');
+                document.getElementById('GenderHidden').value = this.value;
+            });
+        });
+
+        // Echo tên real-time
+        document.getElementById('NameInput').addEventListener('input', function () {
+            const name = this.value.trim() || 'bé';
+            document.getElementById('greetingText').textContent = this.value.trim()
+                ? `Xin chào, mình là ${this.value.trim()}! 👋`
+                : 'Bé nhà bạn là ai vậy? 🐾';
+            document.getElementById('petNameEcho1').textContent = name;
+            document.getElementById('petNameEcho2').textContent = name;
+        });
+
+        // Tính tuổi real-time
+        document.getElementById('BirthDateInput').addEventListener('change', function () {
+            if (!this.value) { document.getElementById('ageEcho').textContent = ''; return; }
+            const birth = new Date(this.value);
+            const now = new Date();
+            let years = now.getFullYear() - birth.getFullYear();
+            let months = now.getMonth() - birth.getMonth();
+            if (months < 0) { years--; months += 12; }
+            document.getElementById('ageEcho').textContent = `→ Bé nhà bạn khoảng ${years} tuổi ${months} tháng`;
+        });
+
+        // Preview ảnh + kiểm tra link hợp lệ
+        const avatarInput = document.getElementById('AvatarInput');
+        const avatarPreviewImg = document.getElementById('avatarPreviewImg');
+        const avatarPreviewText = document.getElementById('avatarPreviewText');
+        const avatarUrlStatus = document.getElementById('avatarUrlStatus');
+
+        avatarInput.addEventListener('input', function () {
+            const url = this.value.trim();
+
+            if (!url) {
+                avatarUrlStatus.textContent = '';
+                avatarUrlStatus.className = 'avatar-url-status';
+                avatarPreviewText.textContent = 'Ảnh đại diện sẽ hiện như thế này (mặc định)';
+                avatarPreviewImg.src = 'https://loremflickr.com/300/300/pet';
+                avatarUrlValid = true;
+                return;
+            }
+
+            // Phát hiện link Google Images sai (link trang, không phải link ảnh)
+            if (url.includes('google.com/imgres') || url.includes('google.com/url')) {
+                avatarUrlStatus.textContent = '⚠️ Đây là link trang Google, chưa phải link ảnh trực tiếp. Xem hướng dẫn phía trên.';
+                avatarUrlStatus.className = 'avatar-url-status status-error';
+                avatarUrlValid = false;
+                return;
+            }
+
+            // Thử tải ảnh để kiểm tra link có ra ảnh thật không
+            const testImg = new Image();
+            testImg.onload = function () {
+                avatarPreviewImg.src = url;
+                avatarPreviewText.textContent = 'Ảnh đại diện sẽ hiện như thế này';
+                avatarUrlStatus.textContent = '✓ Link ảnh hợp lệ';
+                avatarUrlStatus.className = 'avatar-url-status status-success';
+                avatarUrlValid = true;
+            };
+            testImg.onerror = function () {
+                avatarUrlStatus.textContent = '✕ Không tải được ảnh từ link này. Kiểm tra lại link hoặc bỏ trống để dùng ảnh mặc định.';
+                avatarUrlStatus.className = 'avatar-url-status status-error';
+                avatarUrlValid = false;
+            };
+            testImg.src = url;
+        });
+
+        function fillPreviewCard() {
+            const name = document.getElementById('NameInput').value.trim() || 'Chưa đặt tên';
+            const species = document.getElementById('SpeciesHidden').value || 'Chưa chọn';
+            const breed = document.querySelector('[name="Breed"]').value.trim();
+            const gender = document.getElementById('GenderHidden').value;
+            const weight = document.querySelector('[name="WeightKg"]').value;
+            const avatar = document.getElementById('AvatarInput').value.trim()
+                || `https://loremflickr.com/300/300/${species === 'Mèo' ? 'cat' : 'dog'}`;
+            const note = document.querySelector('[name="Note"]').value.trim();
+            const ageText = document.getElementById('ageEcho').textContent.replace('→ ', '');
+
+            document.getElementById('cardAvatar').src = avatar;
+            document.getElementById('cardName').textContent = name;
+            document.getElementById('cardSpecies').textContent = species + (breed ? ' · ' + breed : '');
+
+            let tags = '';
+            if (ageText) tags += `<span class="pet-tag">🎂 ${ageText}</span>`;
+            if (weight) tags += `<span class="pet-tag">⚖️ ${weight} kg</span>`;
+            if (gender) tags += `<span class="pet-tag">${gender === 'Đực' ? '♂️' : '♀️'} ${gender}</span>`;
+            document.getElementById('cardTags').innerHTML = tags;
+
+            document.getElementById('cardNote').textContent = note ? '📝 ' + note : '';
+        }
+
+        // Bấm Enter để qua bước tiếp theo (trừ trong textarea)
+        document.getElementById('petWizardForm').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                if (currentStep < totalSteps) {
+                    if (!validateStep(currentStep)) return;
+                    currentStep++;
+                    showStep(currentStep);
+                } else {
+                    document.getElementById('petWizardForm').requestSubmit();
+                }
+            }
+        });
+
+        showStep(1);
+    </script>
+}

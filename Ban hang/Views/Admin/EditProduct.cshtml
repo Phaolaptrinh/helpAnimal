@@ -1,0 +1,75 @@
+﻿@model Product
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Sửa sản phẩm";
+    var categories = ViewData["Categories"] as List<ProductCategory>;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Sửa sản phẩm</h3>
+    </div>
+    <div class="card-body">
+
+        <div class="mb-3 text-center">
+            <img src="@Model.ImageUrl" width="150" class="rounded" style="object-fit:cover" />
+        </div>
+
+        <form asp-action="EditProduct" asp-route-id="@Model.Id" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="mb-3">
+                <label class="form-label">Tên sản phẩm</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Danh mục</label>
+                <select asp-for="CategoryId" class="form-select">
+                    <option value="">-- Chọn danh mục --</option>
+                    @if (categories != null)
+                    {
+                        foreach (var cat in categories)
+                        {
+                            <option value="@cat.Id" selected="@(cat.Id == Model.CategoryId)">@cat.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Link ảnh sản phẩm</label>
+                <input asp-for="ImageUrl" class="form-control" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Giá bán</label>
+                    <input asp-for="Price" type="number" class="form-control" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Giá gốc (nếu giảm giá)</label>
+                    <input asp-for="OldPrice" type="number" class="form-control" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tồn kho</label>
+                    <input asp-for="Stock" type="number" class="form-control" />
+                </div>
+            </div>
+
+            <div class="form-check mb-3">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label class="form-check-label">Hiển thị bán trên website</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Cập nhật</button>
+            <a asp-action="Products" class="btn btn-secondary">Hủy</a>
+        </form>
+    </div>
+</div>
